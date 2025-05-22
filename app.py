@@ -1,10 +1,14 @@
+
 import os
 import logging
 from tempfile import mkdtemp
 from flask import Flask, render_template, request, jsonify, session, flash, redirect, url_for
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from flask_sqlalchemy import SQLAlchemy
+from email_validator import validate_email, EmailNotValidError
+import uuid
 import stripe
 from utils.pdf_extraction import extract_text_from_pdf
 from utils.openrouter_api import (
@@ -34,6 +38,7 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+login_manager.login_message = 'Zaloguj się, aby uzyskać dostęp do tej strony.'
 
 # Configuration for file uploads
 UPLOAD_FOLDER = mkdtemp()
@@ -44,21 +49,112 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# User model
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
-
+    
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        data = request.get_json() if request.is_json else request.form
+        username = data.get('username')
+        email = data.get('email')
+        password = data.get('password')
+        
+        # Walidacja danych
+        if not username or not email or not password:
+            if request.is_json:
+                return jsonify({'success': False, 'message': 'Wszystkie pola są wymagane.'}), 400
+            flash('Wszystkie pola są wymagane.')
+            return render_template('register.html')
+        
+        # Sprawdzenie czy email jest poprawny
+        try:
+            validate_email(email)
+        except EmailNotValidError:
+            if request.is_json:
+                return jsonify({'success': False, 'message': 'Nieprawidłowy adres email.'}), 400
+            flash('Nieprawidłowy adres email.')
+            return render_template('register.html')
+        
+        # Sprawdzenie czy użytkownik już istnieje
+        if User.query.filter_by(username=username).first():
+            if request.is_json:
+                return jsonify({'success': False, 'message': 'Nazwa użytkownika już istnieje.'}), 400
+            flash('Nazwa użytkownika już istnieje.')
+            return render_template('register.html')
+            
+        if User.query.filter_by(email=email).first():
+            if request.is_json:
+                return jsonify({'success': False, 'message': 'Email już jest zarejestrowany.'}), 400
+            flash('Email już jest zarejestrowany.')
+            return render_template('register.html')
+        
+        # Utworzenie nowego użytkownika
+        user = User(username=username, email=email)
+        user.set_password(password)
+        
+        try:
+            db.session.add(user)
+            db.session.commit()
+            login_user(user)
+            
+            if request.is_json:
+                return jsonify({'success': True, 'message': 'Konto zostało utworzone pomyślnie!'})
+            flash('Konto zostało utworzone pomyślnie!')
+            return redirect(url_for('index'))
+        except Exception as e:
+            db.session.rollback()
+            if request.is_json:
+                return jsonify({'success': False, 'message': 'Błąd podczas tworzenia konta.'}), 500
+            flash('Błąd podczas tworzenia konta.')
+            return render_template('register.html')
+    
+    return render_template('register.html')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        data = request.get_json() if request.is_json else request.form
+        username = data.get('username')
+        password = data.get('password')
+        
+        if not username or not password:
+            if request.is_json:
+                return jsonify({'success': False, 'message': 'Nazwa użytkownika i hasło są wymagane.'}), 400
+            flash('Nazwa użytkownika i hasło są wymagane.')
+            return render_template('login.html')
+        
+        user = User.query.filter_by(username=username).first()
+        
+        if user and user.check_password(password):
+            login_user(user)
+            if request.is_json:
+                return jsonify({'success': True, 'message': 'Zalogowano pomyślnie!'})
+            flash('Zalogowano pomyślnie!')
+            return redirect(url_for('index'))
+        else:
+            if request.is_json:
+                return jsonify({'success': False, 'message': 'Nieprawidłowa nazwa użytkownika lub hasło.'}), 401
+            flash('Nieprawidłowa nazwa użytkownika lub hasło.')
+            return render_template('login.html')
+    
     return render_template('login.html')
 
 @app.route('/logout')
@@ -77,6 +173,15 @@ def index():
 def checkout():
     stripe_public_key = os.environ.get('VITE_STRIPE_PUBLIC_KEY')
     return render_template('checkout.html', stripe_public_key=stripe_public_key)
+
+@app.route('/init-db')
+def init_db():
+    """Inicjalizacja bazy danych"""
+    try:
+        db.create_all()
+        return jsonify({'success': True, 'message': 'Baza danych została zainicjalizowana.'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'Błąd inicjalizacji: {str(e)}'}), 500
 
 @app.route('/upload-cv', methods=['POST'])
 @login_required
