@@ -8,18 +8,16 @@ from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
 
-# Get API key from environment variables with fallback
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1/chat/completions"
-MODEL = "nousresearch/deephermes-3-mistral-24b-preview:free"  # Zaawansowany model DeepHermes
+MODEL = "nousresearch/deephermes-3-mistral-24b-preview:free"
 
-# System prompt dla trybu głębokiego rozumowania
 DEEP_REASONING_PROMPT = """You are a deep thinking AI, you may use extremely long chains of thought to deeply consider the problem and deliberate with yourself via systematic reasoning processes to help come to a correct solution prior to answering. You should enclose your thoughts and internal monologue inside <think> </think> tags, and then provide your solution or response to the problem."""
 
 headers = {
     "Content-Type": "application/json",
     "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-    "HTTP-Referer": "https://cv-optimizer-pro.repl.co/"  # Replace with your actual domain
+    "HTTP-Referer": "https://cv-optimizer-pro.repl.co/"
 }
 
 def send_api_request(prompt, max_tokens=2000):
@@ -235,12 +233,6 @@ def generate_cover_letter(cv_text, job_description):
     
     return send_api_request(prompt, max_tokens=2000)
 
-
-
-
-
-
-
 def analyze_job_url(url):
     """
     Extract job description from a URL with improved handling for popular job sites
@@ -248,25 +240,20 @@ def analyze_job_url(url):
     try:
         logger.debug(f"Analyzing job URL: {url}")
         
-        # Validate URL
         parsed_url = urllib.parse.urlparse(url)
         if not parsed_url.scheme or not parsed_url.netloc:
             raise ValueError("Invalid URL format")
         
-        # Fetch the page
         response = requests.get(url, headers={
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
         })
         response.raise_for_status()
         
-        # Parse HTML with BeautifulSoup
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # Try to find the job description
         job_text = ""
         domain = parsed_url.netloc.lower()
         
-        # Enhanced site-specific extraction for popular job boards
         if 'linkedin.com' in domain:
             containers = soup.select('.description__text, .show-more-less-html, .jobs-description__content')
             if containers:
@@ -287,30 +274,23 @@ def analyze_job_url(url):
             if containers:
                 job_text = containers[0].get_text(separator='\n', strip=True)
         
-        # If no specific site pattern matched, use generic approach
         if not job_text:
-            # Look for common containers for job descriptions
             potential_containers = soup.select('.job-description, .description, .details, article, .job-content, [class*=job], [class*=description], [class*=offer]')
             if potential_containers:
-                # Get the longest container text as it's likely the main description
                 for container in potential_containers:
                     container_text = container.get_text(separator='\n', strip=True)
                     if len(container_text) > len(job_text):
                         job_text = container_text
             
-            # If still no container found, get the body text
             if not job_text and soup.body:
-                # Remove navigation, header, footer and scripts
                 for tag in soup.select('nav, header, footer, script, style, iframe'):
                     tag.decompose()
                 
                 job_text = soup.body.get_text(separator='\n', strip=True)
                 
-                # If body text is very long, try to extract the most relevant part
                 if len(job_text) > 10000:
                     paragraphs = job_text.split('\n')
-                    # Look for paragraphs with keywords likely to be in job descriptions
-                    keywords = ['requirements', 'responsibilities', 'qualifications', 'skills', 'experience', 'about the job', 
+                    keywords = ['requirements', 'responsibilities', 'qualifications', 'skills', 'experience', 'about the job',
                                 'wymagania', 'obowiązki', 'kwalifikacje', 'umiejętności', 'doświadczenie', 'o pracy']
                     
                     relevant_paragraphs = []
@@ -319,13 +299,12 @@ def analyze_job_url(url):
                     for paragraph in paragraphs:
                         if any(keyword.lower() in paragraph.lower() for keyword in keywords):
                             found_relevant = True
-                        if found_relevant and len(paragraph.strip()) > 50:  # Only include substantive paragraphs
+                        if found_relevant and len(paragraph.strip()) > 50:
                             relevant_paragraphs.append(paragraph)
                     
                     if relevant_paragraphs:
                         job_text = '\n'.join(relevant_paragraphs)
         
-        # Clean up the text - remove excessive whitespace but preserve paragraph breaks
         job_text = '\n'.join([' '.join(line.split()) for line in job_text.split('\n') if line.strip()])
         
         if not job_text:
@@ -333,7 +312,6 @@ def analyze_job_url(url):
         
         logger.debug(f"Successfully extracted job description from URL")
         
-        # If the text is too long, summarize it using the AI
         if len(job_text) > 4000:
             logger.debug(f"Job description is long ({len(job_text)} chars), summarizing with AI")
             job_text = summarize_job_description(job_text)
@@ -375,8 +353,6 @@ def summarize_job_description(job_text):
     """
     
     return send_api_request(prompt, max_tokens=1500)
-
-
 
 def ats_optimization_check(cv_text, job_description=""):
     """
@@ -457,7 +433,6 @@ def ats_optimization_check(cv_text, job_description=""):
     """
     
     return send_api_request(prompt, max_tokens=1800)
-
 
 def analyze_cv_strengths(cv_text, job_title="analityk danych"):
     """
