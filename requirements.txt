@@ -1,0 +1,15 @@
+beautifulsoup4
+email-validator
+flask
+flask-dance
+flask-login
+flask-sqlalchemy
+gunicorn
+oauthlib
+openai
+pdfminer
+psycopg2
+pyjwt
+requests
+trafilatura
+werkzeug
