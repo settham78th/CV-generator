@@ -26,6 +26,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Options elements
     const optionInputs = document.querySelectorAll('input[name="optimization-option"]');
     
+    // Check if we're on the main CV page - if not, exit early
+    if (!cvUploadForm || !processButton) {
+        return; // Not on the main CV page, so don't run the rest of the code
+    }
+    
     // Store CV text
     let cvText = '';
 
@@ -88,7 +93,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Process CV button click
     processButton.addEventListener('click', function() {
         // Get selected option
-        const selectedOption = document.querySelector('input[name="optimization-option"]:checked').value;
+        const selectedOptionElement = document.querySelector('input[name="optimization-option"]:checked');
+        if (!selectedOptionElement) {
+            showError('Please select an optimization option.');
+            return;
+        }
+        const selectedOption = selectedOptionElement.value;
 
         // Get job description and URL
         const jobDescription = jobDescriptionInput.value.trim();
