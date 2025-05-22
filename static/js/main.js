@@ -1,21 +1,6 @@
 // Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Walidacja formularza rejestracji
-    const registerForm = document.getElementById('registerForm');
-    if (registerForm) {
-        registerForm.addEventListener('submit', function(e) {
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm_password').value;
-            
-            if (password !== confirmPassword) {
-                e.preventDefault();
-                alert('Hasła nie są identyczne!');
-                return false;
-            }
-        });
-    }
-
-    // CV processing elements - check if they exist
+    // Form elements
     const cvUploadForm = document.getElementById('cv-upload-form');
     const cvFileInput = document.getElementById('cv-file');
     const jobDescriptionInput = document.getElementById('job-description');
@@ -40,11 +25,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Options elements
     const optionInputs = document.querySelectorAll('input[name="optimization-option"]');
-    
-    // Jeśli nie jesteśmy na stronie głównej, zakończ wykonanie
-    if (!cvUploadForm) {
-        return;
-    }
     
     // Store CV text
     let cvText = '';
@@ -166,16 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Enable copy button
                 copyResultBtn.disabled = false;
             } else {
-                // Check if payment is required
-                if (data.payment_required) {
-                    showError('Aby wygenerować CV, musisz najpierw dokonać płatności.');
-                    // Redirect to payment page after a short delay
-                    setTimeout(() => {
-                        window.location.href = '/checkout';
-                    }, 2000);
-                } else {
-                    showError(data.message || 'Error processing CV');
-                }
+                showError(data.message || 'Error processing CV');
                 resultContainer.innerHTML = '<p class="text-center text-danger">Processing failed. Please try again.</p>';
             }
         })
