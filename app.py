@@ -84,10 +84,10 @@ def register():
             flash('Wszystkie pola są wymagane.')
             return render_template('register.html')
         
-        # Sprawdzenie czy email jest poprawny
-        try:
-            validate_email(email)
-        except EmailNotValidError:
+        # Podstawowa walidacja emaila
+        import re
+        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(email_pattern, email.strip()):
             if request.is_json:
                 return jsonify({'success': False, 'message': 'Nieprawidłowy adres email.'}), 400
             flash('Nieprawidłowy adres email.')
@@ -107,8 +107,11 @@ def register():
             return render_template('register.html')
         
         # Utworzenie nowego użytkownika
-        user = User(username=username, email=email)
-        user.set_password(password)
+        password_hash = generate_password_hash(password)
+        user = User()
+        user.username = username.strip()
+        user.email = email.strip()
+        user.password_hash = password_hash
         
         try:
             db.session.add(user)
