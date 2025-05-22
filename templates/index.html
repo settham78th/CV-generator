@@ -8,6 +8,15 @@
                 <h1 class="card-title mb-4">CV Optimizer Pro</h1>
                 <p class="lead">Enhance your CV with AI-powered analysis and optimization</p>
                 <p>Upload your CV and choose from multiple optimization options to increase your chances of landing your dream job.</p>
+                
+                {% if not current_user.is_authenticated %}
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Uwaga:</strong> Aby korzystać z funkcji optymalizacji CV, musisz się najpierw 
+                        <a href="{{ url_for('login') }}" class="alert-link">zalogować</a> lub 
+                        <a href="{{ url_for('register') }}" class="alert-link">założyć konto</a>.
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
