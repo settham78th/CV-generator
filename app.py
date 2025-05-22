@@ -9,7 +9,6 @@ from utils.openrouter_api import (
     ats_optimization_check, generate_interview_questions,
     analyze_cv_strengths
 )
-from replit_auth import ReplitAuth, setup_replit_auth_routes
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)

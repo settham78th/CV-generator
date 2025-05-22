@@ -30,5 +30,3 @@ requests
 trafilatura
 werkzeug
 stripe
-authlib
-requests-oauthlib
