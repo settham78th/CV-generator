@@ -13,4 +13,3 @@ pyjwt
 requests
 trafilatura
 werkzeug
-pdfminer.high_level
