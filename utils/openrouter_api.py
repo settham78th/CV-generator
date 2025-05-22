@@ -114,26 +114,26 @@ def optimize_cv(cv_text, job_description):
        * Zapewnij czytelność dla systemów ATS
 
     ZASADY TWORZENIA OPISÓW STANOWISK (KLUCZOWE):
-    1. Dla pracy jako kierowca dostawczy (DHL/DPD), KONKRETNE punkty jak:
-       * "Zarządzałem codziennie flotą 30+ przesyłek w obszarze wielkomiejskim Poznania, utrzymując 99% terminowość dostaw"
-       * "Optymalizowałem trasy dostawcze w czasie rzeczywistym, redukując koszty paliwa o około 12% miesięcznie"
-       * "Obsługiwałem zaawansowane systemy logistyczne i skanery, precyzyjnie dokumentując status 80+ przesyłek dziennie"
-       * "Rozwiązywałem problemy związane z dostawami w trudnych lokalizacjach, utrzymując wskaźnik pomyślnych doręczeń na poziomie 97%"
-       * "Zarządzałem płatnościami gotówkowymi i bezgotówkowymi, rozliczając średnio 15,000 PLN tygodniowo z zerowym marginesem błędu"
+    1. Dla dowolnej pracy, generuj KONKRETNE punkty odzwierciedlające stanowisko:
+       * "Zarządzałem/am codziennymi operacjami, utrzymując wysoki poziom wydajności i terminowości."
+       * "Optymalizowałem/am procesy, redukując koszty i zwiększając efektywność."
+       * "Obsługiwałem/am zaawansowane systemy, precyzyjnie dokumentując wszystkie działania."
+       * "Rozwiązywałem/am problemy, utrzymując wysoki wskaźnik satysfakcji i minimalizując negatywny wpływ."
+       * "Zarządzałem/am zasobami, rozliczając je z dokładnością i minimalizując straty."
 
-    2. Dla pracy jako Load Master / Welcome Airport Services:
-       * "Nadzorowałem załadunek i rozładunek statków powietrznych, zapewniając zgodność z procedurami bezpieczeństwa i optymalne rozmieszczenie ładunku"
-       * "Koordynowałem pracę zespołu 6 osób odpowiedzialnych za transport bagażu i ładunku cargo"
-       * "Tworzyłem i realizowałem plany załadunku, zwiększając efektywność procesu o 20%"
-       * "Weryfikowałem dokumentację przewozową i celną dla 30+ lotów tygodniowo"
-       * "Monitorowałem wagę i rozkład ładunku, zapewniając bezpieczeństwo i optymalne zużycie paliwa"
+    2. Dla stanowisk związanych z zarządzaniem lub koordynacją:
+       * "Nadzorowałem/am i koordynowałem/am pracę zespołu, zapewniając zgodność z procedurami i optymalne wykorzystanie zasobów."
+       * "Koordynowałem/am działania, efektywnie organizując pracę zespołu."
+       * "Tworzyłem/am i realizowałem/am plany, zwiększając efektywność procesów."
+       * "Weryfikowałem/am dokumentację, zapewniając zgodność z przepisami i standardami."
+       * "Monitorowałem/am wskaźniki, zapewniając bezpieczeństwo i optymalne wyniki."
 
-    3. Dla pracy jako magazynier:
-       * "Kompleksowo zarządzałem procesem kompletacji zamówień z użyciem zaawansowanych skanerów ręcznych i systemów WMS"
-       * "Utrzymywałem 99.8% dokładność w przygotowywaniu 150+ zamówień dziennie"
-       * "Optymalizowałem proces składowania, skracając czas realizacji zamówień o 15%"
-       * "Współpracowałem z zespołem 20+ osób, koordynując przepływ towarów w magazynie o powierzchni 5000m²"
-       * "Monitorowałem i raportowałem stany magazynowe, przyczyniając się do redukcji braków towarowych o 25%"
+    3. Dla stanowisk operacyjnych i specjalistycznych:
+       * "Kompleksowo zarządzałem/am procesami, wykorzystując zaawansowane narzędzia i systemy."
+       * "Utrzymywałem/am wysoki poziom dokładności, realizując zadania z dużą precyzją."
+       * "Optymalizowałem/am procesy, skracając czas realizacji i zwiększając wydajność."
+       * "Współpracowałem/am z zespołem, koordynując przepływ informacji i zasobów."
+       * "Monitorowałem/am i raportowałem/am dane, przyczyniając się do redukcji błędów i optymalizacji zasobów."
 
     STRATEGIA DOSKONALENIA:
     1. KOMPLEKSOWA ANALIZA TREŚCI:
