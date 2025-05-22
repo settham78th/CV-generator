@@ -84,10 +84,10 @@ def register():
             flash('Wszystkie pola są wymagane.')
             return render_template('register.html')
         
-        # Podstawowa walidacja emaila
-        import re
-        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        if not re.match(email_pattern, email.strip()):
+        # Sprawdzenie czy email jest poprawny
+        try:
+            validate_email(email)
+        except EmailNotValidError:
             if request.is_json:
                 return jsonify({'success': False, 'message': 'Nieprawidłowy adres email.'}), 400
             flash('Nieprawidłowy adres email.')
@@ -107,30 +107,24 @@ def register():
             return render_template('register.html')
         
         # Utworzenie nowego użytkownika
-        password_hash = generate_password_hash(password)
-        user = User()
-        user.username = username.strip()
-        user.email = email.strip()
-        user.password_hash = password_hash
+        user = User(username=username, email=email)
+        user.set_password(password)
         
         try:
-            try:
-                db.session.add(user)
-                db.session.commit()
-                login_user(user)
-                
-                if request.is_json:
-                    return jsonify({'success': True, 'message': 'Konto zostało utworzone pomyślnie!'})
-                flash('Konto zostało utworzone pomyślnie!', 'success')
-                return redirect(url_for('index'))
-            except Exception as e:
-                db.session.rollback()
-                error_msg = f"Błąd podczas tworzenia konta: {str(e)}"
-                logger.error(error_msg)
-                if request.is_json:
-                    return jsonify({'success': False, 'message': error_msg}), 500
-                flash(error_msg, 'error')
-                return render_template('register.html')
+            db.session.add(user)
+            db.session.commit()
+            login_user(user)
+            
+            if request.is_json:
+                return jsonify({'success': True, 'message': 'Konto zostało utworzone pomyślnie!'})
+            flash('Konto zostało utworzone pomyślnie!')
+            return redirect(url_for('index'))
+        except Exception as e:
+            db.session.rollback()
+            if request.is_json:
+                return jsonify({'success': False, 'message': 'Błąd podczas tworzenia konta.'}), 500
+            flash('Błąd podczas tworzenia konta.')
+            return render_template('register.html')
     
     return render_template('register.html')
 
@@ -179,25 +173,6 @@ def index():
 def checkout():
     stripe_public_key = os.environ.get('VITE_STRIPE_PUBLIC_KEY')
     return render_template('checkout.html', stripe_public_key=stripe_public_key)
-
-@app.route('/payment-success')
-@login_required
-def payment_success():
-    # Sprawdzenie czy płatność została zakończona
-    payment_intent_id = request.args.get('payment_intent')
-    if payment_intent_id:
-        try:
-            intent = stripe.PaymentIntent.retrieve(payment_intent_id)
-            if intent.status == 'succeeded':
-                session['payment_verified'] = True
-                session['payment_intent_id'] = payment_intent_id
-                flash('Płatność zakończona sukcesem! Możesz teraz wygenerować CV.', 'success')
-            else:
-                flash('Płatność nie została zakończona pomyślnie.', 'error')
-        except Exception as e:
-            flash('Błąd podczas weryfikacji płatności.', 'error')
-    
-    return redirect(url_for('index'))
 
 @app.route('/init-db')
 def init_db():

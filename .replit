@@ -11,15 +11,3 @@ run = ["sh", "-c", "gunicorn main:app"]
 [[ports]]
 localPort = 5000
 externalPort = 5000
-
-[workflows]
-runButton = "Run"
-
-[[workflows.workflow]]
-name = "Run"
-author = 43010371
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python app.py"
