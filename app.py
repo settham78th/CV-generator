@@ -174,6 +174,25 @@ def checkout():
     stripe_public_key = os.environ.get('VITE_STRIPE_PUBLIC_KEY')
     return render_template('checkout.html', stripe_public_key=stripe_public_key)
 
+@app.route('/payment-success')
+@login_required
+def payment_success():
+    # Sprawdzenie czy płatność została zakończona
+    payment_intent_id = request.args.get('payment_intent')
+    if payment_intent_id:
+        try:
+            intent = stripe.PaymentIntent.retrieve(payment_intent_id)
+            if intent.status == 'succeeded':
+                session['payment_verified'] = True
+                session['payment_intent_id'] = payment_intent_id
+                flash('Płatność zakończona sukcesem! Możesz teraz wygenerować CV.', 'success')
+            else:
+                flash('Płatność nie została zakończona pomyślnie.', 'error')
+        except Exception as e:
+            flash('Błąd podczas weryfikacji płatności.', 'error')
+    
+    return redirect(url_for('index'))
+
 @app.route('/init-db')
 def init_db():
     """Inicjalizacja bazy danych"""

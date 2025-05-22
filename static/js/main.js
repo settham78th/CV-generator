@@ -146,7 +146,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Enable copy button
                 copyResultBtn.disabled = false;
             } else {
-                showError(data.message || 'Error processing CV');
+                // Check if payment is required
+                if (data.payment_required) {
+                    showError('Aby wygenerować CV, musisz najpierw dokonać płatności.');
+                    // Redirect to payment page after a short delay
+                    setTimeout(() => {
+                        window.location.href = '/checkout';
+                    }, 2000);
+                } else {
+                    showError(data.message || 'Error processing CV');
+                }
                 resultContainer.innerHTML = '<p class="text-center text-danger">Processing failed. Please try again.</p>';
             }
         })
