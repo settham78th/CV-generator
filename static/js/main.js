@@ -1,6 +1,21 @@
 // Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Form elements - sprawdzenie czy elementy istnieją (tylko na stronie głównej)
+    // Walidacja formularza rejestracji
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('Hasła nie są identyczne!');
+                return false;
+            }
+        });
+    }
+
+    // CV processing elements - check if they exist
     const cvUploadForm = document.getElementById('cv-upload-form');
     const cvFileInput = document.getElementById('cv-file');
     const jobDescriptionInput = document.getElementById('job-description');

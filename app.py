@@ -114,20 +114,23 @@ def register():
         user.password_hash = password_hash
         
         try:
-            db.session.add(user)
-            db.session.commit()
-            login_user(user)
-            
-            if request.is_json:
-                return jsonify({'success': True, 'message': 'Konto zostało utworzone pomyślnie!'})
-            flash('Konto zostało utworzone pomyślnie!')
-            return redirect(url_for('index'))
-        except Exception as e:
-            db.session.rollback()
-            if request.is_json:
-                return jsonify({'success': False, 'message': 'Błąd podczas tworzenia konta.'}), 500
-            flash('Błąd podczas tworzenia konta.')
-            return render_template('register.html')
+            try:
+                db.session.add(user)
+                db.session.commit()
+                login_user(user)
+                
+                if request.is_json:
+                    return jsonify({'success': True, 'message': 'Konto zostało utworzone pomyślnie!'})
+                flash('Konto zostało utworzone pomyślnie!', 'success')
+                return redirect(url_for('index'))
+            except Exception as e:
+                db.session.rollback()
+                error_msg = f"Błąd podczas tworzenia konta: {str(e)}"
+                logger.error(error_msg)
+                if request.is_json:
+                    return jsonify({'success': False, 'message': error_msg}), 500
+                flash(error_msg, 'error')
+                return render_template('register.html')
     
     return render_template('register.html')
 
