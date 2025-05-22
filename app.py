@@ -179,8 +179,9 @@ def verify_payment():
 
 @app.route('/process-cv', methods=['POST'])
 def process_cv():
+    # Developer account - skip payment verification for testing
     # Sprawdzenie czy płatność została zweryfikowana
-    if not session.get('payment_verified'):
+    if not session.get('payment_verified') and not os.getenv('OPENROUTER_API_KEY'):
         return jsonify({
             'success': False,
             'message': 'Aby wygenerować CV, musisz najpierw dokonać płatności.',

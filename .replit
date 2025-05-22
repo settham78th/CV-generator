@@ -9,9 +9,5 @@ packages = ["openssl", "postgresql"]
 run = ["sh", "-c", "gunicorn main:app"]
 
 [[ports]]
-localPort = 4000
-externalPort = 4200
-
-[[ports]]
 localPort = 5000
 externalPort = 5000
