@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Form elements
     const cvUploadForm = document.getElementById('cv-upload-form');
     const cvFileInput = document.getElementById('cv-file');
+    const jobTitleInput = document.getElementById('job-title');
     const jobDescriptionInput = document.getElementById('job-description');
     const jobUrlInput = document.getElementById('job-url');
     const processButton = document.getElementById('process-button');
@@ -22,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Result elements
     const resultContainer = document.getElementById('result-container');
     const copyResultBtn = document.getElementById('copy-result-btn');
+    const compareVersionsBtn = document.getElementById('compare-versions-btn');
 
     // Options elements
     const optionInputs = document.querySelectorAll('input[name="optimization-option"]');
@@ -90,15 +92,22 @@ document.addEventListener('DOMContentLoaded', function() {
         // Get selected option
         const selectedOption = document.querySelector('input[name="optimization-option"]:checked').value;
 
-        // Get job description and URL
+        // Get form values
+        const jobTitle = jobTitleInput.value.trim();
         const jobDescription = jobDescriptionInput.value.trim();
         const jobUrl = jobUrlInput.value.trim();
 
-        // For options that require a job description, check if one is provided
+        // Check if job description is required for certain options
         if ((selectedOption === 'optimize' || selectedOption === 'cover_letter' || selectedOption === 'feedback' || 
-             selectedOption === 'ats_check' || selectedOption === 'interview_questions') 
+             selectedOption === 'ats_check' || selectedOption === 'interview_questions' || selectedOption === 'keyword_analysis') 
             && !jobDescription && !jobUrl) {
             showError('Please provide a job description or URL for this option.');
+            return;
+        }
+
+        // Check if job title is required for position optimization
+        if (selectedOption === 'position_optimization' && !jobTitle) {
+            showError('Please provide a job title for position-specific optimization.');
             return;
         }
 
@@ -108,6 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Prepare request data
         const requestData = {
             cv_text: cvText,
+            job_title: jobTitle,
             job_description: jobDescription,
             job_url: jobUrl,
             selected_option: selectedOption,
@@ -145,6 +155,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Enable copy button
                 copyResultBtn.disabled = false;
+                
+                // Enable compare button if this was an optimization
+                if (selectedOption === 'optimize' || selectedOption === 'position_optimization') {
+                    compareVersionsBtn.disabled = false;
+                }
             } else {
                 showError(data.message || 'Error processing CV');
                 resultContainer.innerHTML = '<p class="text-center text-danger">Processing failed. Please try again.</p>';
@@ -213,6 +228,45 @@ document.addEventListener('DOMContentLoaded', function() {
                 showError('Failed to copy text. Please try manually selecting and copying.');
             }
         );
+    });
+
+    // Compare CV versions button click
+    compareVersionsBtn.addEventListener('click', function() {
+        fetch('/compare-cv-versions')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.has_both_versions) {
+                // Create comparison view
+                const comparisonHtml = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="text-primary"><i class="fas fa-file-alt me-2"></i>Original CV</h5>
+                            <div class="border p-3 bg-light" style="max-height: 400px; overflow-y: auto;">
+                                ${formatTextAsHtml(data.original)}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-success"><i class="fas fa-star me-2"></i>Optimized CV</h5>
+                            <div class="border p-3 bg-light" style="max-height: 400px; overflow-y: auto;">
+                                ${formatTextAsHtml(data.optimized)}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+                        <button class="btn btn-secondary" onclick="location.reload()">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Results
+                        </button>
+                    </div>
+                `;
+                resultContainer.innerHTML = comparisonHtml;
+            } else {
+                showError('No optimized CV available for comparison. Please optimize your CV first.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showError('Failed to load CV versions for comparison.');
+        });
     });
 
     // Listen for option changes (just in case we need to add functionality in future)

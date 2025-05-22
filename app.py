@@ -11,7 +11,9 @@ from utils.openrouter_api import (
     optimize_cv, generate_recruiter_feedback,
     generate_cover_letter, analyze_job_url,
     ats_optimization_check, generate_interview_questions,
-    analyze_cv_strengths
+    analyze_cv_strengths, analyze_cv_score,
+    analyze_keywords_match, check_grammar_and_style,
+    optimize_for_position, generate_interview_tips
 )
 
 # Configure logging
@@ -47,6 +49,18 @@ def checkout():
 def payment_success():
     return render_template('payment_success.html')
 
+@app.route('/compare-cv-versions')
+def compare_cv_versions():
+    original_cv = session.get('original_cv_text', 'Brak oryginalnego CV')
+    optimized_cv = session.get('last_optimized_cv', 'Brak zoptymalizowanego CV')
+    
+    return jsonify({
+        'success': True,
+        'original': original_cv,
+        'optimized': optimized_cv,
+        'has_both_versions': bool(session.get('original_cv_text') and session.get('last_optimized_cv'))
+    })
+
 @app.route('/upload-cv', methods=['POST'])
 def upload_cv():
     if 'cv_file' not in request.files:
@@ -72,6 +86,7 @@ def upload_cv():
 
             # Store CV text in session
             session['cv_text'] = cv_text
+            session['original_cv_text'] = cv_text  # Store original for comparison
             session['original_filename'] = filename
 
             # Remove the file after extraction
@@ -205,7 +220,12 @@ def process_cv():
             'feedback': generate_recruiter_feedback,
             'cover_letter': generate_cover_letter,
             'ats_check': ats_optimization_check,
-            'interview_questions': generate_interview_questions
+            'interview_questions': generate_interview_questions,
+            'cv_score': analyze_cv_score,
+            'keyword_analysis': analyze_keywords_match,
+            'grammar_check': check_grammar_and_style,
+            'position_optimization': optimize_for_position,
+            'interview_tips': generate_interview_tips
         }
 
         if selected_option not in options_handlers:
@@ -214,7 +234,25 @@ def process_cv():
                 'message': 'Invalid option selected.'
             }), 400
 
-        result = options_handlers[selected_option](cv_text, job_description)
+        # Obsługa funkcji wymagających specjalnych parametrów
+        if selected_option == 'grammar_check':
+            result = options_handlers[selected_option](cv_text)
+        elif selected_option == 'position_optimization':
+            job_title = data.get('job_title', 'Specjalista')
+            result = options_handlers[selected_option](cv_text, job_title, job_description)
+        elif selected_option == 'keyword_analysis':
+            if not job_description:
+                return jsonify({
+                    'success': False,
+                    'message': 'Analiza słów kluczowych wymaga opisu stanowiska.'
+                }), 400
+            result = options_handlers[selected_option](cv_text, job_description)
+        else:
+            result = options_handlers[selected_option](cv_text, job_description)
+
+        # Store optimized CV for comparison (only for optimization options)
+        if selected_option in ['optimize', 'position_optimization']:
+            session['last_optimized_cv'] = result
 
         return jsonify({
             'success': True,

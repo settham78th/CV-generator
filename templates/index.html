@@ -56,6 +56,12 @@
             </div>
             <div class="card-body">
                 <div class="mb-3">
+                    <label for="job-title" class="form-label">Job Title / Position</label>
+                    <input type="text" class="form-control" id="job-title" placeholder="e.g. Senior Software Developer, Marketing Manager">
+                    <div class="form-text">Required for position-specific optimization</div>
+                </div>
+                
+                <div class="mb-3">
                     <label for="job-description" class="form-label">Job Description</label>
                     <textarea class="form-control" id="job-description" rows="6" placeholder="Paste the full job description here..."></textarea>
                 </div>
@@ -115,6 +121,46 @@
                             <small class="d-block text-body-secondary">Get potential questions based on your CV</small>
                         </span>
                     </label>
+                    
+                    <label class="list-group-item d-flex gap-2">
+                        <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="cv_score" value="cv_score">
+                        <span>
+                            <strong>📊 CV Score Analysis (1-100)</strong>
+                            <small class="d-block text-body-secondary">Get detailed scoring and improvement recommendations</small>
+                        </span>
+                    </label>
+                    
+                    <label class="list-group-item d-flex gap-2">
+                        <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="keyword_analysis" value="keyword_analysis">
+                        <span>
+                            <strong>🔍 Keywords Match Analysis</strong>
+                            <small class="d-block text-body-secondary">Compare CV keywords with job requirements</small>
+                        </span>
+                    </label>
+                    
+                    <label class="list-group-item d-flex gap-2">
+                        <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="grammar_check" value="grammar_check">
+                        <span>
+                            <strong>✏️ Grammar & Style Check</strong>
+                            <small class="d-block text-body-secondary">Professional language and style analysis</small>
+                        </span>
+                    </label>
+                    
+                    <label class="list-group-item d-flex gap-2">
+                        <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="position_optimization" value="position_optimization">
+                        <span>
+                            <strong>🎯 Position-Specific Optimization</strong>
+                            <small class="d-block text-body-secondary">Tailor CV for specific job title/role</small>
+                        </span>
+                    </label>
+                    
+                    <label class="list-group-item d-flex gap-2">
+                        <input class="form-check-input flex-shrink-0" type="radio" name="optimization-option" id="interview_tips" value="interview_tips">
+                        <span>
+                            <strong>💡 Personalized Interview Tips</strong>
+                            <small class="d-block text-body-secondary">Get ready for your interview with custom advice</small>
+                        </span>
+                    </label>
                 </div>
                 
                 
@@ -163,9 +209,14 @@
         <div class="card mb-4">
             <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
                 <h3 class="mb-0"><i class="fas fa-lightbulb me-2"></i>AI Results</h3>
-                <button id="copy-result-btn" class="btn btn-outline-light btn-sm" disabled>
-                    <i class="fas fa-copy me-1"></i>Copy
-                </button>
+                <div>
+                    <button id="compare-versions-btn" class="btn btn-outline-light btn-sm me-2" disabled>
+                        <i class="fas fa-columns me-1"></i>Compare
+                    </button>
+                    <button id="copy-result-btn" class="btn btn-outline-light btn-sm" disabled>
+                        <i class="fas fa-copy me-1"></i>Copy
+                    </button>
+                </div>
             </div>
             <div class="card-body">
                 <div id="result-container">

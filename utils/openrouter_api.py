@@ -44,7 +44,7 @@ def send_api_request(prompt, max_tokens=2000):
         response.raise_for_status()
         
         result = response.json()
-        logger.debug(f"Received response from OpenRouter API")
+        logger.debug("Received response from OpenRouter API")
         
         if 'choices' in result and len(result['choices']) > 0:
             return result['choices'][0]['message']['content']
@@ -58,6 +58,199 @@ def send_api_request(prompt, max_tokens=2000):
     except (KeyError, IndexError, json.JSONDecodeError) as e:
         logger.error(f"Error parsing API response: {str(e)}")
         raise Exception(f"Failed to parse OpenRouter API response: {str(e)}")
+
+def analyze_cv_score(cv_text, job_description=""):
+    """
+    Analizuje CV i przyznaje ocenę punktową 1-100 z szczegółowym uzasadnieniem
+    """
+    prompt = f"""
+    Przeanalizuj poniższe CV i przyznaj mu ocenę punktową od 1 do 100, gdzie:
+    - 90-100: Doskonałe CV, gotowe do wysłania
+    - 80-89: Bardzo dobre CV z drobnymi usprawnieniami
+    - 70-79: Dobre CV wymagające kilku poprawek
+    - 60-69: Przeciętne CV wymagające znaczących poprawek
+    - 50-59: Słabe CV wymagające dużych zmian
+    - Poniżej 50: CV wymagające całkowitego przepisania
+
+    CV do oceny:
+    {cv_text}
+
+    {"Wymagania z oferty pracy: " + job_description if job_description else ""}
+
+    Uwzględnij w ocenie:
+    1. Strukturę i organizację treści (20 pkt)
+    2. Klarowność i zwięzłość opisów (20 pkt)
+    3. Dopasowanie do wymagań stanowiska (20 pkt)
+    4. Obecność słów kluczowych branżowych (15 pkt)
+    5. Prezentację osiągnięć i rezultatów (15 pkt)
+    6. Gramatykę i styl pisania (10 pkt)
+
+    Odpowiedź w formacie JSON:
+    {{
+        "score": [liczba 1-100],
+        "grade": "[A+/A/B+/B/C+/C/D/F]",
+        "category_scores": {{
+            "structure": [1-20],
+            "clarity": [1-20], 
+            "job_match": [1-20],
+            "keywords": [1-15],
+            "achievements": [1-15],
+            "language": [1-10]
+        }},
+        "strengths": ["punkt mocny 1", "punkt mocny 2", "punkt mocny 3"],
+        "weaknesses": ["słabość 1", "słabość 2", "słabość 3"],
+        "recommendations": ["rekomendacja 1", "rekomendacja 2", "rekomendacja 3"],
+        "summary": "Krótkie podsumowanie oceny CV"
+    }}
+    """
+    
+    return send_api_request(prompt, max_tokens=1500)
+
+def analyze_keywords_match(cv_text, job_description):
+    """
+    Analizuje dopasowanie słów kluczowych z CV do wymagań oferty pracy
+    """
+    if not job_description:
+        return "Brak opisu stanowiska do analizy słów kluczowych."
+    
+    prompt = f"""
+    Przeanalizuj dopasowanie słów kluczowych między CV a wymaganiami oferty pracy.
+
+    CV:
+    {cv_text}
+
+    Oferta pracy:
+    {job_description}
+
+    Odpowiedź w formacie JSON:
+    {{
+        "match_percentage": [0-100],
+        "found_keywords": ["słowo1", "słowo2", "słowo3"],
+        "missing_keywords": ["brakujące1", "brakujące2", "brakujące3"],
+        "recommendations": [
+            "Dodaj umiejętność: [nazwa]",
+            "Podkreśl doświadczenie w: [obszar]",
+            "Użyj terminów branżowych: [terminy]"
+        ],
+        "priority_additions": ["najważniejsze słowo1", "najważniejsze słowo2"],
+        "summary": "Krótkie podsumowanie analizy dopasowania"
+    }}
+    """
+    
+    return send_api_request(prompt, max_tokens=1200)
+
+def check_grammar_and_style(cv_text):
+    """
+    Sprawdza gramatykę, styl i poprawność językową CV
+    """
+    prompt = f"""
+    Przeanalizuj poniższe CV pod kątem gramatyki, stylu i poprawności językowej.
+
+    CV:
+    {cv_text}
+
+    Sprawdź:
+    1. Błędy gramatyczne i ortograficzne
+    2. Spójność czasów gramatycznych
+    3. Profesjonalność języka
+    4. Klarowność przekazu
+    5. Zgodność z konwencjami CV
+
+    Odpowiedź w formacie JSON:
+    {{
+        "grammar_score": [1-10],
+        "style_score": [1-10],
+        "professionalism_score": [1-10],
+        "errors": [
+            {{"type": "gramatyka", "text": "błędny tekst", "correction": "poprawka", "line": "sekcja"}},
+            {{"type": "styl", "text": "tekst do poprawy", "suggestion": "sugestia", "line": "sekcja"}}
+        ],
+        "style_suggestions": [
+            "Użyj bardziej dynamicznych czasowników akcji",
+            "Unikaj powtórzeń słów",
+            "Zachowaj spójny format dat"
+        ],
+        "overall_quality": "ocena ogólna jakości językowej",
+        "summary": "Podsumowanie analizy językowej"
+    }}
+    """
+    
+    return send_api_request(prompt, max_tokens=1500)
+
+def optimize_for_position(cv_text, job_title, job_description=""):
+    """
+    Optymalizuje CV pod konkretne stanowisko
+    """
+    prompt = f"""
+    Zoptymalizuj poniższe CV specjalnie pod stanowisko: {job_title}
+
+    CV:
+    {cv_text}
+
+    {"Wymagania z oferty: " + job_description if job_description else ""}
+
+    Stwórz zoptymalizowaną wersję CV, która:
+    1. Podkreśla najważniejsze umiejętności dla tego stanowiska
+    2. Reorganizuje sekcje według priorytetów dla tej roli
+    3. Dostosowuje język do branżowych standardów
+    4. Maksymalizuje dopasowanie do wymagań
+    5. Zachowuje autentyczność i prawdziwość informacji
+
+    Odpowiedź w formacie JSON:
+    {{
+        "optimized_cv": "Zoptymalizowana wersja CV",
+        "key_changes": ["zmiana 1", "zmiana 2", "zmiana 3"],
+        "focus_areas": ["obszar 1", "obszar 2", "obszar 3"],
+        "added_elements": ["dodany element 1", "dodany element 2"],
+        "positioning_strategy": "Strategia pozycjonowania kandydata",
+        "summary": "Podsumowanie optymalizacji"
+    }}
+    """
+    
+    return send_api_request(prompt, max_tokens=2500)
+
+def generate_interview_tips(cv_text, job_description=""):
+    """
+    Generuje spersonalizowane tipy na rozmowę kwalifikacyjną
+    """
+    prompt = f"""
+    Na podstawie CV i opisu stanowiska, przygotuj spersonalizowane tipy na rozmowę kwalifikacyjną.
+
+    CV:
+    {cv_text}
+
+    {"Stanowisko: " + job_description if job_description else ""}
+
+    Odpowiedź w formacie JSON:
+    {{
+        "preparation_tips": [
+            "Przygotuj się na pytanie o [konkretny aspekt z CV]",
+            "Przećwicz opowiadanie o projekcie [nazwa projektu]",
+            "Badź gotowy na pytania techniczne o [umiejętność]"
+        ],
+        "strength_stories": [
+            {{"strength": "umiejętność", "story_outline": "jak opowiedzieć o sukcesie", "example": "konkretny przykład z CV"}},
+            {{"strength": "osiągnięcie", "story_outline": "struktura opowieści", "example": "przykład z doświadczenia"}}
+        ],
+        "weakness_preparation": [
+            {{"potential_weakness": "obszar do poprawy", "how_to_address": "jak to przedstawić pozytywnie"}},
+            {{"potential_weakness": "luka w CV", "how_to_address": "jak wytłumaczyć"}}
+        ],
+        "questions_to_ask": [
+            "Przemyślane pytanie o firmę/zespół",
+            "Pytanie o rozwój w roli",
+            "Pytanie o wyzwania stanowiska"
+        ],
+        "research_suggestions": [
+            "Sprawdź informacje o: [aspekt firmy]",
+            "Poznaj ostatnie projekty firmy",
+            "Zbadaj kulturę organizacyjną"
+        ],
+        "summary": "Kluczowe rady dla tego kandydata"
+    }}
+    """
+    
+    return send_api_request(prompt, max_tokens=2000)
 
 def optimize_cv(cv_text, job_description):
     """
