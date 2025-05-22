@@ -1,6 +1,6 @@
 // Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Form elements
+    // Form elements - sprawdzenie czy elementy istnieją (tylko na stronie głównej)
     const cvUploadForm = document.getElementById('cv-upload-form');
     const cvFileInput = document.getElementById('cv-file');
     const jobDescriptionInput = document.getElementById('job-description');
@@ -25,6 +25,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Options elements
     const optionInputs = document.querySelectorAll('input[name="optimization-option"]');
+    
+    // Jeśli nie jesteśmy na stronie głównej, zakończ wykonanie
+    if (!cvUploadForm) {
+        return;
+    }
     
     // Store CV text
     let cvText = '';
