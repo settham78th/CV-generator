@@ -1,8 +1,0 @@
-services:
-  - type: web
-    name: cvoptimizer
-    env: python
-    buildCommand: ""
-    startCommand: gunicorn main:app
-    plan: free
-    autoDeploy: true
