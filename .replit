@@ -6,7 +6,7 @@ channel = "stable-24_05"
 packages = ["openssl", "postgresql"]
 
 [deployment]
-run = ["sh", "-c", "python app.py"]
+run = ["sh", "-c", "gunicorn main:app"]
 
 [[ports]]
 localPort = 5000
