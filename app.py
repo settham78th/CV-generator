@@ -328,12 +328,11 @@ def verify_payment():
             'message': f"Błąd podczas weryfikacji płatności: {str(e)}"
         }), 500
 
-@app.route('/process-cv', methods=['POST'])
+@app.route('/process_cv', methods=['POST'])
 @login_required
 def process_cv():
-    # Developer account - skip payment verification for testing
-    # Sprawdzenie czy płatność została zweryfikowana
-    if not session.get('payment_verified') and not os.getenv('OPENROUTER_API_KEY'):
+    # Skip payment verification if API key is available
+    if not session.get('payment_verified') and not os.environ.get('OPENROUTER_API_KEY'):
         return jsonify({
             'success': False,
             'message': 'Aby wygenerować CV, musisz najpierw dokonać płatności.',
@@ -435,10 +434,13 @@ def process_cv():
         })
 
     except Exception as e:
+        import traceback
+        error_details = traceback.format_exc()
         logger.error(f"Error processing CV: {str(e)}")
+        logger.error(f"Full traceback: {error_details}")
         return jsonify({
             'success': False,
-            'message': f"Error processing request: {str(e)}"
+            'message': f"Processing failed. Please try again. Error: {str(e)}"
         }), 500
 
 if __name__ == '__main__':
