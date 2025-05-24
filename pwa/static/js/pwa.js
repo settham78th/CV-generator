@@ -1,5 +1,52 @@
 // PWA functionality for CV Optimizer Pro
 
+// Window Controls Overlay support
+if ('windowControlsOverlay' in navigator) {
+  navigator.windowControlsOverlay.addEventListener('geometrychange', () => {
+    const { x, y, width, height } = navigator.windowControlsOverlay.getTitlebarAreaRect();
+    document.documentElement.style.setProperty('--titlebar-area-x', `${x}px`);
+    document.documentElement.style.setProperty('--titlebar-area-y', `${y}px`);
+    document.documentElement.style.setProperty('--titlebar-area-width', `${width}px`);
+    document.documentElement.style.setProperty('--titlebar-area-height', `${height}px`);
+  });
+}
+
+// File Handler API support
+if ('launchQueue' in window) {
+  window.launchQueue.setConsumer(async (launchParams) => {
+    if (!launchParams.files.length) return;
+    
+    for (const fileHandle of launchParams.files) {
+      const file = await fileHandle.getFile();
+      if (file.type === 'application/pdf') {
+        // Auto-fill the file input
+        const fileInput = document.getElementById('cv-file');
+        if (fileInput) {
+          const dt = new DataTransfer();
+          dt.items.add(file);
+          fileInput.files = dt.files;
+          
+          // Show success message
+          showNotification('Plik PDF został automatycznie załadowany!', 'success');
+        }
+      }
+    }
+  });
+}
+
+// Protocol Handler support
+if ('registerProtocolHandler' in navigator) {
+  try {
+    navigator.registerProtocolHandler(
+      'web+cvoptimizer',
+      '/?action=%s',
+      'CV Optimizer Pro'
+    );
+  } catch (e) {
+    console.log('Protocol handler registration failed:', e);
+  }
+}
+
 // Register Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -214,4 +261,40 @@ function debounce(func, wait) {
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
   };
+}
+
+// Enhanced notification system
+function showNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  notification.className = `alert alert-${type} alert-dismissible fade show notification-toast`;
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    min-width: 300px;
+    animation: slideInRight 0.3s ease-out;
+  `;
+  
+  notification.innerHTML = `
+    <div class="d-flex align-items-center">
+      <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+      ${message}
+    </div>
+    <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  // Auto remove after 5 seconds
+  setTimeout(() => {
+    if (notification.parentElement) {
+      notification.remove();
+    }
+  }, 5000);
+}
+
+// Enhanced link handling for PWA
+if ('windowControlsOverlay' in navigator && navigator.windowControlsOverlay.visible) {
+  document.body.classList.add('window-controls-overlay');
 }

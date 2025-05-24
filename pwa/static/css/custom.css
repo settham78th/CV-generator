@@ -1,3 +1,81 @@
+/* Modern CV Optimizer Pro PWA Styles */
+
+/* Window Controls Overlay Support */
+.window-controls-overlay {
+  --titlebar-area-x: 0px;
+  --titlebar-area-y: 0px;
+  --titlebar-area-width: 100%;
+  --titlebar-area-height: 33px;
+}
+
+.window-controls-overlay .navbar {
+  padding-left: env(titlebar-area-x, 0);
+  padding-right: calc(100vw - env(titlebar-area-width, 100vw));
+  padding-top: env(titlebar-area-height, 0);
+}
+
+.window-controls-overlay .navbar-brand {
+  -webkit-app-region: drag;
+  app-region: drag;
+}
+
+.window-controls-overlay .navbar-nav {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+
+/* Enhanced PWA Notifications */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.notification-toast {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+/* File Handler Drop Zone Enhancement */
+.file-drop-zone {
+  border: 2px dashed var(--gradient-primary);
+  border-radius: 15px;
+  padding: 30px;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  transition: all 0.3s ease;
+}
+
+.file-drop-zone.dragover {
+  border-color: #667eea;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  transform: scale(1.02);
+}
+
+/* PWA Install Button */
+.install-btn {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  color: white;
+  font-weight: 600;
+  margin-left: 10px;
+  transition: all 0.3s ease;
+}
+
+.install-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(79, 172, 254, 0.3);
+}
+
 /* Modern CV Optimizer Pro Styles */
 
 /* CSS Variables for consistent theming */
