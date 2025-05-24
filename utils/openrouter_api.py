@@ -263,8 +263,8 @@ def optimize_cv(cv_text, job_description):
     1. NIE GENERUJ SZABLONOWEGO CV! Każdy element musi być konkretny i profesjonalny
     2. MOCNO ulepsz wszystkie opisy, tworząc prawdziwie profesjonalne CV
     3. WYKORZYSTAJ wszystkie dane z oryginalnego CV, ale znacznie ulepsz ich prezentację
-    4. DODAJ faktyczne mierzalne osiągnięcia do każdego stanowiska (% poprawy, liczby, rezultaty)
-    5. NIE WYMYŚLAJ doświadczenia, stanowisk, pracodawców czy dat - używaj TYLKO firm i stanowisk z oryginalnego CV
+    4. ABSOLUTNIE NIE DODAWAJ WYMYŚLONYCH LICZB, PROCENT LUB OSIĄGNIĘĆ! Używaj tylko informacji z oryginalnego CV
+    5. BEZWZGLĘDNIE NIE WYMYŚLAJ: doświadczenia, stanowisk, pracodawców, dat, projektów, osiągnięć, liczb, procent, certyfikatów czy jakichkolwiek faktów
 
     KLUCZOWE ELEMENTY DO STWORZENIA:
 
@@ -279,26 +279,25 @@ def optimize_cv(cv_text, job_description):
           - Nazwa firmy, stanowisko, okres zatrudnienia (jak w oryginale)
           - 4-6 bardzo konkretnych bullet pointów dla KAŻDEGO miejsca pracy
           - Każdy bullet point musi rozpoczynać się od MOCNEGO czasownika
-          - Dodaj branżowy kontekst do każdego punktu (skala operacji, liczba przesyłek, obszary)
-          - Zamień ogólnikowe opisy na KONKRETNE osiągnięcia
-          - Pokaż wpływ pracy na firmę (oszczędność czasu/kosztów, poprawa efektywności)
+          - TYLKO przepisz zadania z oryginalnego CV w bardziej profesjonalny sposób
+          - NIE DODAWAJ żadnych liczb, procent, obszarów ani osiągnięć, których nie ma w oryginale
+          - Używaj wyłącznie informacji faktycznych z przesłanego CV
        * Wzór dla KAŻDEGO bullet pointu:
-          - [Mocny czasownik] + [konkretne zadanie] + [skala/kontekst] + [mierzalny rezultat]
-          - Przykład: "Optymalizowałem dzienne trasy dostaw dla obszaru 150 km², skracając czas doręczeń o 15% i zwiększając liczbę obsługiwanych paczek o 25 dziennie"
+          - [Mocny czasownik] + [zadanie z oryginalnego CV przepisane profesjonalnie]
+          - PRZYKŁAD ZŁEGO PODEJŚCIA: "zwiększając o 15%" - NIE RÓB TEGO!
+          - PRZYKŁAD DOBREGO PODEJŚCIA: przepisz tylko to co faktycznie jest w CV
 
-    3. UMIEJĘTNOŚCI (CAŁKOWICIE PRZEPRACOWANE):
-       * Stwórz profesjonalny podział umiejętności na kategorie:
-          - Umiejętności techniczne (systemy logistyczne, skanery, oprogramowanie)
-          - Umiejętności branżowe (znajomość przepisów drogowych, planowanie tras)
-          - Umiejętności miękkie (komunikacja, praca pod presją czasu)
-       * Dla KAŻDEJ umiejętności dodaj krótkie uzasadnienie, jak była wykorzystywana
-       * Uwzględnij umiejętności techniczne związane z logistyką i transportem
+    3. UMIEJĘTNOŚCI (TYLKO Z ORYGINALNEGO CV):
+       * Uporządkuj umiejętności wymienione w oryginalnym CV w kategorie
+       * NIE DODAWAJ nowych umiejętności, których nie ma w oryginale
+       * Używaj TYLKO umiejętności faktycznie wymienionych przez kandydata
+       * Możesz jedynie lepiej je pogrupować i opisać profesjonalnie
 
-    4. UPORZĄDKOWANIE I DODANIE BRAKUJĄCYCH SEKCJI:
-       * Dodaj sekcję "Certyfikaty i uprawnienia" (prawo jazdy, inne)
-       * Uporządkuj wszystkie sekcje w logicznej kolejności
-       * Przenieś wszystkie doświadczenia zawodowe do właściwej sekcji
-       * Dodaj sekcję "Osiągnięcia zawodowe" z konkretnymi wynikami
+    4. UPORZĄDKOWANIE (BEZ DODAWANIA NOWYCH TREŚCI):
+       * Uporządkuj sekcje w logicznej kolejności używając TYLKO istniejących informacji
+       * NIE DODAWAJ nowych sekcji, jeśli nie ma do nich danych w oryginale
+       * NIE WYMYŚLAJ certyfikatów, osiągnięć ani uprawnień
+       * Przenieś istniejące informacje do właściwych sekcji
 
     5. FORMATOWANIE I PREZENTACJA:
        * Użyj przejrzystej struktury z odpowiednimi nagłówkami
