@@ -48,7 +48,7 @@ def send_api_request(prompt, max_tokens=2000):
             {"role": "user", "content": prompt}
         ],
         "max_tokens": max_tokens,
-        "temperature": 0.7
+        "temperature": 0.9
     }
     
     try:
