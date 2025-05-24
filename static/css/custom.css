@@ -1,15 +1,45 @@
 /* ULTRA-MODERN CV OPTIMIZER PRO - REVOLUTIONARY UI */
 
-/* Advanced Glassmorphism Cards */
+/* Advanced Glassmorphism Cards with Better Readability */
 .ultra-modern-card {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(25px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: var(--border-radius-xl);
     box-shadow: var(--shadow-glass);
     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     position: relative;
     overflow: hidden;
+}
+
+.ultra-modern-card .card-body {
+    background: rgba(255, 255, 255, 0.95);
+    color: #333333;
+    border-radius: 0 0 var(--border-radius-xl) var(--border-radius-xl);
+}
+
+/* Improved text readability for all elements */
+.ultra-modern-card .form-label,
+.ultra-modern-card .form-text,
+.ultra-modern-card .list-group-item {
+    color: #444444 !important;
+    font-weight: 500;
+}
+
+.ultra-modern-card .form-control,
+.ultra-modern-card .form-select {
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #333333;
+    font-weight: 500;
+}
+
+.ultra-modern-card .form-control:focus,
+.ultra-modern-card .form-select:focus {
+    background: #ffffff;
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    color: #333333;
 }
 
 .ultra-modern-card::before {
