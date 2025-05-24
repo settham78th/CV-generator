@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+
+{% block title %}Profil użytkownika - CV Optimizer Pro{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-info">
+            <h1>Witaj, {{ user.get_full_name() }}!</h1>
+            <p class="profile-email">{{ user.email }}</p>
+            <p class="profile-member-since">Członek od {{ user.created_at.strftime('%d.%m.%Y') }}</p>
+        </div>
+        <div class="profile-actions">
+            <a href="{{ url_for('edit_profile') }}" class="btn btn-secondary">Edytuj profil</a>
+            <a href="{{ url_for('change_password') }}" class="btn btn-outline">Zmień hasło</a>
+        </div>
+    </div>
+
+    <div class="profile-content">
+        <div class="profile-section">
+            <h2>Ostatnie CV</h2>
+            {% if recent_cvs %}
+                <div class="cv-list">
+                    {% for cv in recent_cvs %}
+                        <div class="cv-card">
+                            <div class="cv-info">
+                                <h3>{{ cv.filename }}</h3>
+                                <p class="cv-date">Przesłane {{ cv.uploaded_at.strftime('%d.%m.%Y o %H:%M') }}</p>
+                                {% if cv.job_title %}
+                                    <p class="cv-job-title">Stanowisko: {{ cv.job_title }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="cv-stats">
+                                <span class="stat">{{ cv.analysis_results|length }} analiz</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>Nie masz jeszcze żadnych przesłanych CV.</p>
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">Prześlij swoje pierwsze CV</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="profile-section">
+            <h2>Statystyki konta</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">{{ recent_cvs|length }}</div>
+                    <div class="stat-label">Przesłanych CV</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">
+                        {% set total_analyses = namespace(count=0) %}
+                        {% for cv in recent_cvs %}
+                            {% set total_analyses.count = total_analyses.count + cv.analysis_results|length %}
+                        {% endfor %}
+                        {{ total_analyses.count }}
+                    </div>
+                    <div class="stat-label">Wykonanych analiz</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ user.created_at.strftime('%d') }}</div>
+                    <div class="stat-label">Dni w systemie</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.profile-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    color: white;
+    margin-bottom: 40px;
+}
+
+.profile-info h1 {
+    margin: 0 0 10px 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.profile-email {
+    margin: 5px 0;
+    opacity: 0.9;
+    font-size: 1.1rem;
+}
+
+.profile-member-since {
+    margin: 5px 0 0 0;
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-outline {
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.profile-content {
+    display: grid;
+    gap: 30px;
+}
+
+.profile-section {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.profile-section h2 {
+    margin: 0 0 25px 0;
+    color: #2d3748;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.cv-list {
+    display: grid;
+    gap: 15px;
+}
+
+.cv-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    border-radius: 15px;
+    border: 1px solid #e2e8f0;
+}
+
+.cv-info h3 {
+    margin: 0 0 5px 0;
+    color: #2d3748;
+    font-weight: 600;
+}
+
+.cv-date, .cv-job-title {
+    margin: 3px 0;
+    color: #718096;
+    font-size: 0.9rem;
+}
+
+.cv-stats .stat {
+    background: #667eea;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #718096;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin-top: 20px;
+    display: inline-block;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    text-align: center;
+    padding: 25px;
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    border-radius: 15px;
+    border: 1px solid #e2e8f0;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    color: #718096;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .profile-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .cv-card {
+        flex-direction: column;
+        align-items: start;
+        gap: 15px;
+    }
+}
+</style>
+{% endblock %}
