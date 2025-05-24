@@ -244,25 +244,40 @@
     <!-- Right Column: CV Text and Results -->
     <div class="col-lg-7">
         <div class="card mb-4">
-            <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
-                <h3 class="mb-0"><i class="fas fa-file-alt me-2"></i>Your CV Text</h3>
-                <button id="edit-cv-btn" class="btn btn-outline-light btn-sm" disabled>
-                    <i class="fas fa-edit me-1"></i>Edit
+            <div class="card-header bg-secondary text-white">
+                <button class="btn btn-link text-white text-decoration-none p-0 w-100 text-start" type="button" data-bs-toggle="collapse" data-bs-target="#cv-text-section" aria-expanded="false" aria-controls="cv-text-section">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0"><i class="fas fa-file-alt me-2"></i>Twój tekst CV</h3>
+                        <div class="d-flex align-items-center">
+                            <button id="edit-cv-btn" class="btn btn-outline-light btn-sm me-2" disabled onclick="event.stopPropagation();">
+                                <i class="fas fa-edit me-1"></i>Edytuj
+                            </button>
+                            <i class="fas fa-chevron-down collapse-icon"></i>
+                        </div>
+                    </div>
                 </button>
             </div>
-            <div class="card-body">
-                <div id="cv-preview">
-                    <p class="text-muted text-center">Upload your CV to see the extracted text here</p>
-                </div>
-                <div id="cv-editor" style="display: none;">
-                    <textarea class="form-control" id="cv-text-editor" rows="15"></textarea>
-                    <div class="d-flex justify-content-end mt-2">
-                        <button id="save-cv-btn" class="btn btn-primary">
-                            <i class="fas fa-save me-1"></i>Save Changes
-                        </button>
-                        <button id="cancel-edit-btn" class="btn btn-outline-secondary ms-2">
-                            <i class="fas fa-times me-1"></i>Cancel
-                        </button>
+            <div class="collapse" id="cv-text-section">
+                <div class="card-body">
+                    <div class="collapse-info mb-3">
+                        <p class="text-muted mb-2">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Tutaj możesz zobaczyć i edytować tekst wyodrębniony z Twojego CV
+                        </p>
+                    </div>
+                    <div id="cv-preview">
+                        <p class="text-muted text-center">Prześlij CV, aby zobaczyć wyodrębniony tekst</p>
+                    </div>
+                    <div id="cv-editor" style="display: none;">
+                        <textarea class="form-control" id="cv-text-editor" rows="15"></textarea>
+                        <div class="d-flex justify-content-end mt-2">
+                            <button id="save-cv-btn" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>Zapisz zmiany
+                            </button>
+                            <button id="cancel-edit-btn" class="btn btn-outline-secondary ms-2">
+                                <i class="fas fa-times me-1"></i>Anuluj
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
