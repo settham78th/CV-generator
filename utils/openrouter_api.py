@@ -114,7 +114,7 @@ def analyze_cv_score(cv_text, job_description=""):
     
     return send_api_request(prompt, max_tokens=1500)
 
-def analyze_keywords_match(cv_text, job_description):
+def analyze_keywords_match(cv_text, job_description, language='pl'):
     """
     Analizuje dopasowanie słów kluczowych z CV do wymagań oferty pracy
     """
@@ -145,7 +145,7 @@ def analyze_keywords_match(cv_text, job_description):
     }}
     """
     
-    return send_api_request(prompt, max_tokens=1200)
+    return send_api_request(prompt, max_tokens=1200, language=language)
 
 def check_grammar_and_style(cv_text, language='pl'):
     """
@@ -185,7 +185,7 @@ def check_grammar_and_style(cv_text, language='pl'):
     
     return send_api_request(prompt, max_tokens=1500)
 
-def optimize_for_position(cv_text, job_title, job_description=""):
+def optimize_for_position(cv_text, job_title, job_description="", language='pl'):
     """
     Optymalizuje CV pod konkretne stanowisko
     """
@@ -217,7 +217,7 @@ def optimize_for_position(cv_text, job_title, job_description=""):
     
     return send_api_request(prompt, max_tokens=2500)
 
-def generate_interview_tips(cv_text, job_description=""):
+def generate_interview_tips(cv_text, job_description="", language='pl'):
     """
     Generuje spersonalizowane tipy na rozmowę kwalifikacyjną
     """
@@ -599,7 +599,7 @@ def summarize_job_description(job_text):
     
     return send_api_request(prompt, max_tokens=1500)
 
-def ats_optimization_check(cv_text, job_description=""):
+def ats_optimization_check(cv_text, job_description="", language='pl'):
     """
     Check CV against ATS (Applicant Tracking System) and provide suggestions for improvement
     """
@@ -679,7 +679,7 @@ def ats_optimization_check(cv_text, job_description=""):
     
     return send_api_request(prompt, max_tokens=1800)
 
-def analyze_cv_strengths(cv_text, job_title="analityk danych"):
+def analyze_cv_strengths(cv_text, job_title="analityk danych", language='pl'):
     """
     Analyze CV strengths for a specific job position and provide improvement suggestions
     """
@@ -700,7 +700,7 @@ def analyze_cv_strengths(cv_text, job_title="analityk danych"):
     
     return send_api_request(prompt, max_tokens=2500)
 
-def generate_interview_questions(cv_text, job_description=""):
+def generate_interview_questions(cv_text, job_description="", language='pl'):
     """
     Generate likely interview questions based on CV and job description
     """
