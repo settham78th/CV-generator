@@ -1,4 +1,103 @@
-/* Modern CV Optimizer Pro Styles */
+/* ULTRA-MODERN CV OPTIMIZER PRO - REVOLUTIONARY UI */
+
+/* Advanced Glassmorphism Cards */
+.ultra-modern-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(25px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-glass);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.ultra-modern-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.6s;
+}
+
+.ultra-modern-card:hover::before {
+    left: 100%;
+}
+
+.ultra-modern-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--shadow-floating);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Revolutionary Button Styles */
+.btn-ultra-modern {
+    background: var(--gradient-primary);
+    border: none;
+    border-radius: var(--border-radius-lg);
+    padding: 16px 32px;
+    font-weight: 600;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    box-shadow: var(--shadow-soft);
+}
+
+.btn-ultra-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s;
+}
+
+.btn-ultra-modern:hover::before {
+    left: 100%;
+}
+
+.btn-ultra-modern:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-neon);
+    filter: brightness(1.1);
+}
+
+.btn-ultra-modern:active {
+    transform: translateY(-1px);
+}
+
+/* Floating Action Elements */
+.floating-element {
+    animation: floatingPulse 4s ease-in-out infinite;
+}
+
+@keyframes floatingPulse {
+    0%, 100% { 
+        transform: translateY(0px);
+        box-shadow: var(--shadow-soft);
+    }
+    50% { 
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-floating);
+    }
+}
+
+/* Neon Glow Effects */
+.neon-glow {
+    box-shadow: var(--shadow-neon);
+    animation: neonPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes neonPulse {
+    from { box-shadow: var(--shadow-neon); }
+    to { box-shadow: 0 0 30px rgba(102, 126, 234, 0.8), 0 0 60px rgba(102, 126, 234, 0.6); }
+}
 
 /* Flash Messages Styles */
 .flash-messages {
@@ -65,29 +164,73 @@
 
 /* CSS Variables for consistent theming */
 :root {
-    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    --gradient-info: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-    --gradient-warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-    --gradient-dark: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    /* Revolutionary Multi-Layer Gradients */
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    --gradient-secondary: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fad0c4 100%);
+    --gradient-success: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    --gradient-info: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+    --gradient-warning: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    --gradient-dark: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+    --gradient-rainbow: linear-gradient(45deg, #ff0081, #ff8c00, #40e0d0, #8a2be2, #ff1493);
+    --gradient-cosmic: radial-gradient(ellipse at center, #667eea 0%, #764ba2 35%, #f093fb 100%);
     
-    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.1);
-    --shadow-medium: 0 15px 35px rgba(0, 0, 0, 0.15);
-    --shadow-strong: 0 20px 40px rgba(0, 0, 0, 0.2);
+    /* Next-Gen Glassmorphism Shadows */
+    --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    --shadow-soft: 0 15px 35px rgba(50, 50, 93, 0.1);
+    --shadow-medium: 0 20px 40px rgba(50, 50, 93, 0.15);
+    --shadow-strong: 0 25px 50px rgba(50, 50, 93, 0.25);
+    --shadow-neon: 0 0 20px rgba(102, 126, 234, 0.6), 0 0 40px rgba(102, 126, 234, 0.4);
+    --shadow-floating: 0 30px 60px rgba(0, 0, 0, 0.12);
     
-    --border-radius-lg: 15px;
-    --border-radius-xl: 20px;
+    /* Organic Border Radius */
+    --border-radius-sm: 8px;
+    --border-radius-md: 12px;
+    --border-radius-lg: 24px;
+    --border-radius-xl: 32px;
+    --border-radius-2xl: 40px;
+    --border-radius-organic: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    --border-radius-blob: 30% 70% 70% 30% / 30% 30% 70% 70%;
     
-    --text-primary: #2c3e50;
-    --text-secondary: #7f8c8d;
+    /* Advanced Typography */
+    --text-primary: #1a202c;
+    --text-secondary: #2d3748;
+    --text-muted: #718096;
 }
 
-/* Body and container improvements */
+/* Revolutionary Body Design */
 body {
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%),
+        linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Floating Particles Animation */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 2px, transparent 2px),
+        radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px, 30px 30px;
+    animation: float 20s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+}
 }
 
 .container-fluid {

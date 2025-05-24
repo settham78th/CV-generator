@@ -109,19 +109,19 @@
 <div class="row">
     <!-- Left Column: Upload and Job Input -->
     <div class="col-lg-5">
-        <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
-                <h3 class="mb-0"><i class="fas fa-upload me-2"></i>Upload Your CV</h3>
+        <div class="ultra-modern-card floating-element mb-4">
+            <div class="card-header" style="background: var(--gradient-primary); border: none; border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;">
+                <h3 class="mb-0 text-white"><i class="fas fa-rocket me-2"></i>Prześlij swoje CV</h3>
             </div>
-            <div class="card-body">
+            <div class="card-body" style="padding: 2rem;">
                 <form id="cv-upload-form" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="cv-file" class="form-label">Upload CV (PDF format)</label>
                         <input type="file" class="form-control" id="cv-file" name="cv_file" accept=".pdf" required>
                         <div class="form-text">Your CV will be processed securely and not stored permanently.</div>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-file-upload me-2"></i>Upload CV
+                    <button type="submit" class="btn btn-ultra-modern w-100 neon-glow">
+                        <i class="fas fa-rocket me-2"></i>Prześlij CV
                     </button>
                 </form>
                 
@@ -136,11 +136,11 @@
             </div>
         </div>
         
-        <div class="card mb-4">
-            <div class="card-header bg-info text-white">
-                <h3 class="mb-0"><i class="fas fa-briefcase me-2"></i>Job Information</h3>
+        <div class="ultra-modern-card floating-element mb-4">
+            <div class="card-header" style="background: var(--gradient-info); border: none; border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;">
+                <h3 class="mb-0 text-white"><i class="fas fa-briefcase me-2"></i>Informacje o pracy</h3>
             </div>
-            <div class="card-body">
+            <div class="card-body" style="padding: 2rem;">
                 <div class="mb-3">
                     <label for="job-title" class="form-label">Job Title / Position</label>
                     <input type="text" class="form-control" id="job-title" placeholder="e.g. Senior Software Developer, Marketing Manager">
