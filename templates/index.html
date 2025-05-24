@@ -1,20 +1,82 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row mb-4">
+<!-- Hero Section -->
+<div class="row mb-5" id="upload-section">
     <div class="col-12">
-        <div class="card bg-dark">
-            <div class="card-body text-center">
-                <h1 class="card-title mb-4">CV Optimizer Pro</h1>
-                <p class="lead">Enhance your CV with AI-powered analysis and optimization</p>
-                <p>Upload your CV and choose from multiple optimization options to increase your chances of landing your dream job.</p>
-                
-                <div class="alert alert-warning mt-3">
-                    <i class="fas fa-credit-card me-2"></i>
-                    <strong>Płatność:</strong> Wygenerowanie zoptymalizowanego CV kosztuje <strong>9,99 PLN</strong>. 
-                    Po przesłaniu CV przejdź do <a href="{{ url_for('checkout') }}" class="alert-link">płatności</a>, 
-                    aby odblokować funkcje AI.
+        <div class="card bg-dark hero-section">
+            <div class="card-body text-center py-5">
+                <div class="hero-content">
+                    <div class="hero-icon mb-4">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h1 class="hero-title mb-4">CV Optimizer Pro</h1>
+                    <p class="hero-subtitle mb-4">Zmień swoje CV w potężne narzędzie kariery dzięki sztucznej inteligencji</p>
+                    <p class="hero-description mb-4">
+                        Przesyłaj swoje CV i wybieraj spośród zaawansowanych opcji optymalizacji, 
+                        aby zwiększyć swoje szanse na zdobycie wymarzonej pracy.
+                    </p>
+                    
+                    <div class="pricing-highlight">
+                        <div class="pricing-card">
+                            <div class="pricing-icon">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <div class="pricing-content">
+                                <h4 class="pricing-title">Profesjonalna analiza AI</h4>
+                                <div class="pricing-amount">
+                                    <span class="currency">PLN</span>
+                                    <span class="price">9,99</span>
+                                </div>
+                                <p class="pricing-features">
+                                    ✨ Analiza CV przez AI<br>
+                                    🎯 Optymalizacja pod stanowisko<br>
+                                    📊 Ocena i rekomendacje<br>
+                                    💼 List motywacyjny
+                                </p>
+                                <a href="{{ url_for('checkout') }}" class="btn btn-success btn-lg pricing-cta">
+                                    <i class="fas fa-credit-card me-2"></i>Rozpocznij optymalizację
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Overview -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-upload"></i>
+                </div>
+                <h5>Łatwe przesyłanie</h5>
+                <p>Prześlij CV w formacie PDF</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h5>Analiza AI</h5>
+                <p>Zaawansowana analiza przez sztuczną inteligencję</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-target"></i>
+                </div>
+                <h5>Optymalizacja</h5>
+                <p>Dostosowanie do konkretnego stanowiska</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h5>Analiza wyników</h5>
+                <p>Szczegółowe raporty i rekomendacje</p>
             </div>
         </div>
     </div>
