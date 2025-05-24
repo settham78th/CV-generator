@@ -330,12 +330,12 @@ def verify_payment():
 @app.route('/process-cv', methods=['POST'])
 @login_required
 def process_cv():
-    # Developer account - skip payment verification for testing
+    # PRODUCTION MODE - Payment required for all users
     # Sprawdzenie czy płatność została zweryfikowana
-    if not session.get('payment_verified') and not os.getenv('OPENROUTER_API_KEY'):
+    if not session.get('payment_verified'):
         return jsonify({
             'success': False,
-            'message': 'Aby wygenerować CV, musisz najpierw dokonać płatności.',
+            'message': 'Aby wygenerować CV, musisz najpierw dokonać płatności 9,99 PLN.',
             'payment_required': True
         }), 402  # Payment Required
     
@@ -443,4 +443,23 @@ def process_cv():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+        
+        # Create developer account for management
+        dev_user = User.query.filter_by(username='developer').first()
+        if not dev_user:
+            dev_user = User(
+                username='developer',
+                email='dev@cvoptimizer.pro',
+                first_name='Developer',
+                last_name='Admin'
+            )
+            dev_user.set_password('DevAdmin2024!')
+            db.session.add(dev_user)
+            db.session.commit()
+            print("✅ Developer account created successfully!")
+            print("🔑 Username: developer")
+            print("🔑 Password: DevAdmin2024!")
+        else:
+            print("✅ Developer account already exists")
+            
     app.run(host='0.0.0.0', port=5001, debug=True)
