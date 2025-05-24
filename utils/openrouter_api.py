@@ -373,28 +373,53 @@ def generate_recruiter_feedback(cv_text, job_description=""):
     """
     context = ""
     if job_description:
-        context = f"Job description for context:\n{job_description}"
+        context = f"Opis stanowiska do kontekstu:\n{job_description}"
         
     prompt = f"""
-    TASK: You are an experienced professional recruiter. Review this CV and provide detailed, actionable feedback.
+    ZADANIE: Jesteś doświadczonym rekruterem. Przeanalizuj to CV i udziel szczegółowej, konstruktywnej opinii w języku polskim.
     
-    Include:
-    1. Overall impression
-    2. Strengths and weaknesses
-    3. Formatting and structure assessment
-    4. Content quality evaluation
-    5. ATS compatibility
-    6. Specific improvement suggestions
-    7. Rating out of 10
-    
-    IMPORTANT: Respond in the same language as the CV. If the CV is in Polish, respond in Polish. If the CV is in English, respond in English.
+    Uwzględnij w ocenie:
+    1. Ogólne wrażenie i pierwsza reakcja
+    2. Mocne strony i słabości kandydata
+    3. Ocena formatowania i struktury CV
+    4. Jakość treści i sposób prezentacji
+    5. Kompatybilność z systemami ATS
+    6. Konkretne sugestie poprawek
+    7. Ocena ogólna w skali 1-10
+    8. Prawdopodobieństwo zaproszenia na rozmowę
     
     {context}
     
-    CV:
+    CV do oceny:
     {cv_text}
     
-    Provide detailed recruiter feedback. Be honest but constructive.
+    Odpowiedź w formacie JSON:
+    {{
+        "overall_impression": "Pierwsze wrażenie i ogólna ocena",
+        "rating": [1-10],
+        "strengths": [
+            "Mocna strona 1",
+            "Mocna strona 2", 
+            "Mocna strona 3"
+        ],
+        "weaknesses": [
+            "Słabość 1 z sugestią poprawy",
+            "Słabość 2 z sugestią poprawy",
+            "Słabość 3 z sugestią poprawy"
+        ],
+        "formatting_assessment": "Ocena layoutu, struktury i czytelności",
+        "content_quality": "Ocena jakości treści i sposobu opisywania doświadczeń",
+        "ats_compatibility": "Czy CV przejdzie przez systemy automatycznej selekcji",
+        "specific_improvements": [
+            "Konkretna poprawa 1",
+            "Konkretna poprawa 2",
+            "Konkretna poprawa 3"
+        ],
+        "interview_probability": "Prawdopodobieństwo zaproszenia na rozmowę i dlaczego",
+        "recruiter_summary": "Podsumowanie z perspektywy rekrutera"
+    }}
+    
+    Bądź szczery, ale konstruktywny. Myśl jak prawdziwy rekruter oceniający kandydata.
     """
     
     return send_api_request(prompt, max_tokens=2000)
@@ -404,24 +429,31 @@ def generate_cover_letter(cv_text, job_description):
     Generate a cover letter based on a CV and job description
     """
     prompt = f"""
-    TASK: Create a personalized cover letter based on this CV and job description.
+    ZADANIE: Napisz spersonalizowany list motywacyjny w języku polskim na podstawie CV i opisu stanowiska.
     
-    The cover letter should:
-    - Be professionally formatted
-    - Highlight relevant skills and experiences from the CV
-    - Connect the candidate's background to the job requirements
-    - Include a compelling introduction and conclusion
-    - Be approximately 300-400 words
+    List motywacyjny powinien:
+    - Być profesjonalnie sformatowany
+    - Podkreślać istotne umiejętności i doświadczenia z CV
+    - Łączyć doświadczenie kandydata z wymaganiami stanowiska
+    - Zawierać przekonujące wprowadzenie i zakończenie
+    - Mieć około 300-400 słów
+    - Być napisany naturalnym, profesjonalnym językiem polskim
     
-    IMPORTANT: Respond in the same language as the CV. If the CV is in Polish, respond in Polish. If the CV is in English, respond in English.
+    Struktura listu:
+    1. Nagłówek z danymi kontaktowymi
+    2. Zwrot do adresata
+    3. Wprowadzenie - dlaczego aplikujesz
+    4. Główna treść - dopasowanie doświadczenia do wymagań
+    5. Zakończenie z wyrażeniem zainteresowania
+    6. Pozdrowienia
     
-    Job description:
+    Opis stanowiska:
     {job_description}
     
-    CV:
+    CV kandydata:
     {cv_text}
     
-    Return only the cover letter in plain text format.
+    Napisz kompletny list motywacyjny w języku polskim. Użyj profesjonalnego, ale ciepłego tonu.
     """
     
     return send_api_request(prompt, max_tokens=2000)
@@ -524,25 +556,23 @@ def summarize_job_description(job_text):
     Summarize a long job description using the AI
     """
     prompt = f"""
-    TASK: Extract and summarize the key information from this job posting.
+    ZADANIE: Wyciągnij i podsumuj kluczowe informacje z tego ogłoszenia o pracę w języku polskim.
     
-    Include:
-    1. Job title and company (if mentioned)
-    2. Required skills and qualifications
-    3. Responsibilities and duties
-    4. Preferred experience
-    5. Any other important details (benefits, location, etc.)
-    6. TOP 5 keywords that are critically important for this position
+    Uwzględnij:
+    1. Stanowisko i nazwa firmy (jeśli podane)
+    2. Wymagane umiejętności i kwalifikacje
+    3. Obowiązki i zakres zadań
+    4. Preferowane doświadczenie
+    5. Inne ważne szczegóły (benefity, lokalizacja, itp.)
+    6. TOP 5 słów kluczowych krytycznych dla tego stanowiska
     
-    IMPORTANT: Detect the language of the job posting and respond in that same language.
-    If the job posting is in Polish, respond in Polish.
-    If the job posting is in English, respond in English.
-    
-    Job posting text:
+    Tekst ogłoszenia:
     {job_text[:4000]}...
     
-    Provide a concise but comprehensive summary of this job posting, focusing on information relevant for CV optimization.
-    Format the TOP 5 keywords as a separate section at the end labeled "KLUCZOWE SŁOWA:" (in Polish) or "KEY KEYWORDS:" (in English).
+    Stwórz zwięzłe ale kompletne podsumowanie tego ogłoszenia, skupiając się na informacjach istotnych dla optymalizacji CV.
+    Na końcu umieść sekcję "KLUCZOWE SŁOWA:" z 5 najważniejszymi terminami.
+    
+    Odpowiedź w języku polskim.
     """
     
     return send_api_request(prompt, max_tokens=1500)
