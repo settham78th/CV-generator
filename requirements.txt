@@ -30,3 +30,8 @@ requests
 trafilatura
 werkzeug
 stripe
+email-validator
+flask-bcrypt
+flask-login
+flask-wtf
+wtforms
