@@ -82,6 +82,30 @@
     </div>
 </div>
 
+{% if not current_user.is_authenticated %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-info border-0" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%); border-radius: 15px;">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-info-circle me-3" style="font-size: 1.5rem; color: #667eea;"></i>
+                <div>
+                    <h5 class="mb-1" style="color: #667eea;">Zaloguj się, aby korzystać z pełnych funkcji</h5>
+                    <p class="mb-2">Aby przesłać CV i skorzystać z optymalizacji, musisz mieć konto użytkownika.</p>
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-sign-in-alt me-1"></i>Zaloguj się
+                        </a>
+                        <a href="{{ url_for('register') }}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-user-plus me-1"></i>Utwórz konto
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <div class="row">
     <!-- Left Column: Upload and Job Input -->
     <div class="col-lg-5">
