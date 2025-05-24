@@ -19,8 +19,7 @@ from utils.openrouter_api import (
     ats_optimization_check, generate_interview_questions,
     analyze_cv_strengths, analyze_cv_score,
     analyze_keywords_match, check_grammar_and_style,
-    optimize_for_position, generate_interview_tips,
-    generate_smart_improvements
+    optimize_for_position, generate_interview_tips
 )
 
 # Configure logging
@@ -328,11 +327,12 @@ def verify_payment():
             'message': f"Błąd podczas weryfikacji płatności: {str(e)}"
         }), 500
 
-@app.route('/process_cv', methods=['POST'])
+@app.route('/process-cv', methods=['POST'])
 @login_required
 def process_cv():
-    # Skip payment verification if API key is available
-    if not session.get('payment_verified') and not os.environ.get('OPENROUTER_API_KEY'):
+    # Developer account - skip payment verification for testing
+    # Sprawdzenie czy płatność została zweryfikowana
+    if not session.get('payment_verified') and not os.getenv('OPENROUTER_API_KEY'):
         return jsonify({
             'success': False,
             'message': 'Aby wygenerować CV, musisz najpierw dokonać płatności.',
@@ -377,8 +377,7 @@ def process_cv():
             'keyword_analysis': analyze_keywords_match,
             'grammar_check': check_grammar_and_style,
             'position_optimization': optimize_for_position,
-            'interview_tips': generate_interview_tips,
-            'smart_improvements': generate_smart_improvements
+            'interview_tips': generate_interview_tips
         }
 
         if selected_option not in options_handlers:
@@ -434,16 +433,13 @@ def process_cv():
         })
 
     except Exception as e:
-        import traceback
-        error_details = traceback.format_exc()
         logger.error(f"Error processing CV: {str(e)}")
-        logger.error(f"Full traceback: {error_details}")
         return jsonify({
             'success': False,
-            'message': f"Processing failed. Please try again. Error: {str(e)}"
+            'message': f"Error processing request: {str(e)}"
         }), 500
 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(host='0.0.0.0', port=5003, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)
