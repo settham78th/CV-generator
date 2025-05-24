@@ -32,7 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let cvText = '';
 
     // Handle CV upload form submission
-    cvUploadForm.addEventListener('submit', function(e) {
+    if (cvUploadForm) {
+        cvUploadForm.addEventListener('submit', function(e) {
         e.preventDefault();
 
         // Check if a file is selected
