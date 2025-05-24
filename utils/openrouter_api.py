@@ -147,7 +147,7 @@ def analyze_keywords_match(cv_text, job_description):
     
     return send_api_request(prompt, max_tokens=1200)
 
-def check_grammar_and_style(cv_text):
+def check_grammar_and_style(cv_text, language='pl'):
     """
     Sprawdza gramatykę, styl i poprawność językową CV
     """
@@ -260,7 +260,7 @@ def generate_interview_tips(cv_text, job_description=""):
     
     return send_api_request(prompt, max_tokens=2000)
 
-def optimize_cv(cv_text, job_description):
+def optimize_cv(cv_text, job_description, language='pl'):
     """
     Create an optimized version of CV with enhanced experience and skills extraction
     """
@@ -379,9 +379,9 @@ def optimize_cv(cv_text, job_description):
     DOZWOLONE: Jedynie przepisanie istniejących informacji w bardziej profesjonalny sposób.
     """
     
-    return send_api_request(prompt, max_tokens=2500)
+    return send_api_request(prompt, max_tokens=2500, language=language)
 
-def generate_recruiter_feedback(cv_text, job_description=""):
+def generate_recruiter_feedback(cv_text, job_description="", language='pl'):
     """
     Generate feedback on a CV as if from an AI recruiter
     """
@@ -440,7 +440,7 @@ def generate_recruiter_feedback(cv_text, job_description=""):
     
     return send_api_request(prompt, max_tokens=2000)
 
-def generate_cover_letter(cv_text, job_description):
+def generate_cover_letter(cv_text, job_description, language='pl'):
     """
     Generate a cover letter based on a CV and job description
     """
