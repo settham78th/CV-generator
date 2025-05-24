@@ -20,18 +20,26 @@ headers = {
     "HTTP-Referer": "https://cv-optimizer-pro.repl.co/"
 }
 
-def send_api_request(prompt, max_tokens=2000):
+def send_api_request(prompt, max_tokens=2000, language='pl'):
     """
-    Send a request to the OpenRouter API
+    Send a request to the OpenRouter API with language specification
     """
     if not OPENROUTER_API_KEY:
         logger.error("OpenRouter API key not found")
         raise ValueError("OpenRouter API key not set in environment variables")
     
+    # Language-specific system prompts
+    language_prompts = {
+        'pl': "Jesteś ekspertem w optymalizacji CV i doradcą kariery. ZAWSZE odpowiadaj w języku polskim, niezależnie od języka CV lub opisu pracy. Używaj polskiej terminologii HR i poprawnej polszczyzny.",
+        'en': "You are an expert resume editor and career advisor. ALWAYS respond in English, regardless of the language of the CV or job description. Use proper English HR terminology and grammar."
+    }
+    
+    system_prompt = DEEP_REASONING_PROMPT + "\n" + language_prompts.get(language, language_prompts['pl'])
+    
     payload = {
         "model": MODEL,
         "messages": [
-            {"role": "system", "content": DEEP_REASONING_PROMPT + "\nYou are an expert resume editor and career advisor. Always respond in the same language as the CV or job description provided by the user."},
+            {"role": "system", "content": system_prompt},
             {"role": "user", "content": prompt}
         ],
         "max_tokens": max_tokens,

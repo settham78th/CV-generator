@@ -344,6 +344,7 @@ def process_cv():
     job_url = data.get('job_url', '')
     selected_option = data.get('selected_option', '')
     roles = data.get('roles', [])
+    language = data.get('language', 'pl')  # Default to Polish
 
     if not cv_text:
         return jsonify({
@@ -386,21 +387,21 @@ def process_cv():
                 'message': 'Invalid option selected.'
             }), 400
 
-        # Obsługa funkcji wymagających specjalnych parametrów
+        # Obsługa funkcji wymagających specjalnych parametrów z obsługą języka
         if selected_option == 'grammar_check':
-            result = options_handlers[selected_option](cv_text)
+            result = options_handlers[selected_option](cv_text, language)
         elif selected_option == 'position_optimization':
             job_title = data.get('job_title', 'Specjalista')
-            result = options_handlers[selected_option](cv_text, job_title, job_description)
+            result = options_handlers[selected_option](cv_text, job_title, job_description, language)
         elif selected_option == 'keyword_analysis':
             if not job_description:
                 return jsonify({
                     'success': False,
                     'message': 'Analiza słów kluczowych wymaga opisu stanowiska.'
                 }), 400
-            result = options_handlers[selected_option](cv_text, job_description)
+            result = options_handlers[selected_option](cv_text, job_description, language)
         else:
-            result = options_handlers[selected_option](cv_text, job_description)
+            result = options_handlers[selected_option](cv_text, job_description, language)
 
         # Store optimized CV for comparison (only for optimization options)
         if selected_option in ['optimize', 'position_optimization']:
