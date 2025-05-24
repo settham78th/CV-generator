@@ -19,7 +19,8 @@ from utils.openrouter_api import (
     ats_optimization_check, generate_interview_questions,
     analyze_cv_strengths, analyze_cv_score,
     analyze_keywords_match, check_grammar_and_style,
-    optimize_for_position, generate_interview_tips
+    optimize_for_position, generate_interview_tips,
+    generate_smart_improvements
 )
 
 # Configure logging
@@ -377,7 +378,8 @@ def process_cv():
             'keyword_analysis': analyze_keywords_match,
             'grammar_check': check_grammar_and_style,
             'position_optimization': optimize_for_position,
-            'interview_tips': generate_interview_tips
+            'interview_tips': generate_interview_tips,
+            'smart_improvements': generate_smart_improvements
         }
 
         if selected_option not in options_handlers:

@@ -10,9 +10,23 @@ logger = logging.getLogger(__name__)
 
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1/chat/completions"
-MODEL = "nousresearch/deephermes-3-mistral-24b-preview:free"
+MODEL = "google/gemini-flash-1.5-8b"
 
-DEEP_REASONING_PROMPT = """You are a deep thinking AI, you may use extremely long chains of thought to deeply consider the problem and deliberate with yourself via systematic reasoning processes to help come to a correct solution prior to answering. You should enclose your thoughts and internal monologue inside <think> </think> tags, and then provide your solution or response to the problem."""
+DEEP_REASONING_PROMPT = """Jesteś ekspertem w dziedzinie HR i optymalizacji CV. Twoje zadanie to dostarczanie profesjonalnych, praktycznych i actionable porad dotyczących kariery. 
+
+WAŻNE ZASADY:
+1. Zawsze odpowiadaj w języku polskim
+2. Używaj tylko informacji zawartych w dostarczonym CV - nie wymyślaj faktów
+3. Podawaj konkretne, praktyczne wskazówki
+4. Formatuj odpowiedzi czytelnie z użyciem list i akapitów
+5. Bądź konstruktywny i motywujący w feedbacku
+
+Analizuj dokładnie CV pod kątem:
+- Struktura i czytelność
+- Dopasowanie do stanowiska
+- Słowa kluczowe i terminologia branżowa
+- Osiągnięcia i mierzalne rezultaty
+- Umiejętności techniczne i miękkie"""
 
 headers = {
     "Content-Type": "application/json",
@@ -35,7 +49,9 @@ def send_api_request(prompt, max_tokens=2000):
             {"role": "user", "content": prompt}
         ],
         "max_tokens": max_tokens,
-        "temperature": 0.7
+        "temperature": 0.3,
+        "top_p": 0.9,
+        "frequency_penalty": 0.1
     }
     
     try:
@@ -691,6 +707,45 @@ def analyze_cv_strengths(cv_text, job_title="analityk danych"):
     """
     
     return send_api_request(prompt, max_tokens=2500)
+
+def generate_smart_improvements(cv_text, job_description=""):
+    """
+    Generuje inteligentne, konkretne sugestie ulepszeń CV
+    """
+    prompt = f"""
+    Przeanalizuj to CV i podaj konkretne, praktyczne sugestie ulepszeń:
+
+    CV:
+    {cv_text}
+
+    {"Stanowisko docelowe: " + job_description if job_description else ""}
+
+    Wygeneruj konkretne rekomendacje w formacie:
+
+    **NATYCHMIASTOWE POPRAWKI:**
+    • [konkretna poprawka 1]
+    • [konkretna poprawka 2]
+    • [konkretna poprawka 3]
+
+    **WZMOCNIENIE TREŚCI:**
+    • [jak ulepszyć opis doświadczenia]
+    • [jakie liczby/osiągnięcia dodać]
+    • [które umiejętności podkreślić]
+
+    **OPTYMALIZACJA POD STANOWISKO:**
+    • [jakie słowa kluczowe dodać]
+    • [którą sekcję przepisać]
+    • [co przenieść na górę]
+
+    **UZUPEŁNIENIA:**
+    • [czego brakuje w CV]
+    • [jakie sekcje dodać]
+    • [jak poprawić formatowanie]
+
+    Bądź bardzo konkretny i praktyczny. Podaj gotowe do użycia sugestie!
+    """
+    
+    return send_api_request(prompt, max_tokens=2000)
 
 def generate_interview_questions(cv_text, job_description=""):
     """
