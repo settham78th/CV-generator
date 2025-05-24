@@ -30,16 +30,23 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 
-# Database configuration
+# Database configuration for Render
 database_url = os.environ.get('DATABASE_URL')
 if not database_url:
     raise ValueError("DATABASE_URL environment variable is required")
+
+# Fix for Render PostgreSQL URL compatibility
+if database_url.startswith('postgres://'):
+    database_url = database_url.replace('postgres://', 'postgresql://', 1)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_pre_ping': True,
     'pool_recycle': 300,
+    'pool_timeout': 20,
+    'pool_size': 10,
+    'max_overflow': 20
 }
 
 # Initialize extensions
