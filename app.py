@@ -330,9 +330,12 @@ def verify_payment():
 @app.route('/process-cv', methods=['POST'])
 @login_required
 def process_cv():
-    # PRODUCTION MODE - Payment required for all users
-    # Sprawdzenie czy płatność została zweryfikowana
-    if not session.get('payment_verified'):
+    # PRODUCTION MODE - Payment required except for developer account
+    # Sprawdzenie czy to konto developer (darmowy dostęp)
+    if current_user.username == 'developer':
+        # Developer account - free access
+        pass
+    elif not session.get('payment_verified'):
         return jsonify({
             'success': False,
             'message': 'Aby wygenerować CV, musisz najpierw dokonać płatności 9,99 PLN.',

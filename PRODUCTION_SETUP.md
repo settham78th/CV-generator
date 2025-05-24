@@ -10,10 +10,11 @@
 - Bezpieczna weryfikacja płatności
 
 **👤 Konta użytkowników:**
-- ✅ **Developer Account:**
+- ✅ **Developer Account (DARMOWY DOSTĘP):**
   - Username: `developer`
   - Password: `DevAdmin2024!`
   - Email: `dev@cvoptimizer.pro`
+  - 🎯 **Może generować CV za darmo bez płatności**
 
 **🎨 Funkcje aplikacji:**
 - Ultra-nowoczesny interfejs z glassmorphism
