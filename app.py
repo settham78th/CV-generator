@@ -78,6 +78,12 @@ def allowed_file(filename):
 def index():
     return render_template('index.html')
 
+@app.route('/ads.txt')
+def ads_txt():
+    """Serve ads.txt file for Google AdSense verification"""
+    from flask import send_from_directory
+    return send_from_directory('static', 'ads.txt', mimetype='text/plain')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
