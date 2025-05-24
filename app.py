@@ -412,6 +412,8 @@ def process_cv():
             }), 400
 
         # Obsługa funkcji wymagających specjalnych parametrów z obsługą języka
+        logger.info(f"Processing CV with language: {language}, option: {selected_option}")
+        
         if selected_option == 'grammar_check':
             result = options_handlers[selected_option](cv_text, language)
         elif selected_option == 'position_optimization':
@@ -423,6 +425,8 @@ def process_cv():
                     'success': False,
                     'message': 'Analiza słów kluczowych wymaga opisu stanowiska.'
                 }), 400
+            result = options_handlers[selected_option](cv_text, job_description, language)
+        elif selected_option == 'cv_score':
             result = options_handlers[selected_option](cv_text, job_description, language)
         else:
             result = options_handlers[selected_option](cv_text, job_description, language)

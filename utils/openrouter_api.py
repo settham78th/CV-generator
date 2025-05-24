@@ -67,7 +67,7 @@ def send_api_request(prompt, max_tokens=2000, language='pl'):
         logger.error(f"Error parsing API response: {str(e)}")
         raise Exception(f"Failed to parse OpenRouter API response: {str(e)}")
 
-def analyze_cv_score(cv_text, job_description=""):
+def analyze_cv_score(cv_text, job_description="", language='pl'):
     """
     Analizuje CV i przyznaje ocenę punktową 1-100 z szczegółowym uzasadnieniem
     """
@@ -112,7 +112,7 @@ def analyze_cv_score(cv_text, job_description=""):
     }}
     """
     
-    return send_api_request(prompt, max_tokens=1500)
+    return send_api_request(prompt, max_tokens=1500, language=language)
 
 def analyze_keywords_match(cv_text, job_description, language='pl'):
     """
