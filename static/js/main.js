@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initialize empty roles array
         let roles = [];
 
+        // Get selected language
+        const selectedLanguage = document.querySelector('input[name="language"]:checked').value;
+        
         // Prepare request data
         const requestData = {
             cv_text: cvText,
@@ -121,7 +124,8 @@ document.addEventListener('DOMContentLoaded', function() {
             job_description: jobDescription,
             job_url: jobUrl,
             selected_option: selectedOption,
-            roles: roles
+            roles: roles,
+            language: selectedLanguage
         };
 
         // Show processing indicator and disable buttons

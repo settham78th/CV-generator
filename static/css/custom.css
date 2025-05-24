@@ -129,6 +129,53 @@
     to { box-shadow: 0 0 30px rgba(102, 126, 234, 0.8), 0 0 60px rgba(102, 126, 234, 0.6); }
 }
 
+/* Language Selector Styles */
+.language-selector {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.language-selector input[type="radio"] {
+    display: none;
+}
+
+.language-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius-lg);
+    background: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    color: #333;
+}
+
+.language-option:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+}
+
+.language-selector input[type="radio"]:checked + .language-option {
+    background: var(--gradient-primary);
+    color: white;
+    border-color: #667eea;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.language-option .flag {
+    font-size: 1.2em;
+}
+
+.language-option span:last-child {
+    font-size: 0.9rem;
+}
+
 /* Flash Messages Styles */
 .flash-messages {
     position: fixed;
