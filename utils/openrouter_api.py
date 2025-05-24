@@ -268,11 +268,11 @@ def optimize_cv(cv_text, job_description):
 
     KLUCZOWE ELEMENTY DO STWORZENIA:
 
-    1. PROFESJONALNE PODSUMOWANIE ZAWODOWE (ZUPEŁNIE NOWE):
-       * Utwórz mocne, konkretne zawodowe summary na początku (4-6 zdań)
-       * Podkreśl kluczowe umiejętności i obszary specjalizacji z CV
-       * Dostosuj tone of voice do branży (transport/logistyka)
-       * Dodaj konkretną wartość jaką kandydat wnosi (np. optymalizacja tras, oszczędność czasu)
+    1. PROFESJONALNE PODSUMOWANIE ZAWODOWE (BAZOWANE NA FAKTACH):
+       * Utwórz summary TYLKO na podstawie informacji z oryginalnego CV
+       * Podkreśl kluczowe umiejętności wymienione w CV - nie dodawaj nowych
+       * NIE WYMYŚLAJ branży, jeśli nie jest jasno określona w CV
+       * Opisz wartość kandydata TYLKO na podstawie jego faktycznego doświadczenia z CV
 
     2. DOŚWIADCZENIE ZAWODOWE (ROZBUDUJ SZCZEGÓŁOWO):
        * Rozpisz KAŻDE stanowisko w pełni profesjonalny sposób:
@@ -361,7 +361,14 @@ def optimize_cv(cv_text, job_description):
     Oryginalne CV:
     {cv_text}
 
-    BEZWZGLĘDNIE UNIKAJ generycznych opisów! Każdy punkt musi być oparty na realiach branży logistycznej i konkretnych zadaniach kierowcy czy pracownika magazynu. Stwórz mocne, profesjonalne CV na miarę 2023 roku!
+    ⚠️ KRYTYCZNE OSTRZEŻENIE - ABSOLUTNE ZAKAZY:
+    1. NIE WYMYŚLAJ żadnych liczb, procent, dat, firm, stanowisk ani osiągnięć
+    2. NIE DODAWAJ informacji, których nie ma w oryginalnym CV
+    3. NIE TWÓRZ fałszywych projektów, certyfikatów czy doświadczeń
+    4. UŻYWAJ TYLKO faktów z przesłanego CV - nic więcej!
+    5. Jeśli w CV brakuje informacji - zostaw puste, nie wymyślaj!
+    
+    DOZWOLONE: Jedynie przepisanie istniejących informacji w bardziej profesjonalny sposób.
     """
     
     return send_api_request(prompt, max_tokens=2500)
@@ -377,13 +384,15 @@ def generate_recruiter_feedback(cv_text, job_description=""):
     prompt = f"""
     ZADANIE: Jesteś doświadczonym rekruterem. Przeanalizuj to CV i udziel szczegółowej, konstruktywnej opinii w języku polskim.
     
+    ⚠️ KLUCZOWE: Oceniaj TYLKO to co faktycznie jest w CV. NIE ZAKŁADAJ, NIE DOMYŚLAJ się i NIE DODAWAJ informacji, których tam nie ma.
+    
     Uwzględnij w ocenie:
-    1. Ogólne wrażenie i pierwsza reakcja
-    2. Mocne strony i słabości kandydata
+    1. Ogólne wrażenie i pierwsza reakcja na podstawie faktycznej treści CV
+    2. Mocne strony i słabości wynikające z konkretnych informacji w CV
     3. Ocena formatowania i struktury CV
-    4. Jakość treści i sposób prezentacji
+    4. Jakość treści i sposób prezentacji faktycznych doświadczeń
     5. Kompatybilność z systemami ATS
-    6. Konkretne sugestie poprawek
+    6. Konkretne sugestie poprawek oparte na tym co jest w CV
     7. Ocena ogólna w skali 1-10
     8. Prawdopodobieństwo zaproszenia na rozmowę
     
@@ -394,31 +403,31 @@ def generate_recruiter_feedback(cv_text, job_description=""):
     
     Odpowiedź w formacie JSON:
     {{
-        "overall_impression": "Pierwsze wrażenie i ogólna ocena",
+        "overall_impression": "Pierwsze wrażenie oparte na faktycznej treści CV",
         "rating": [1-10],
         "strengths": [
-            "Mocna strona 1",
-            "Mocna strona 2", 
-            "Mocna strona 3"
+            "Mocna strona 1 (konkretnie z CV)",
+            "Mocna strona 2 (konkretnie z CV)", 
+            "Mocna strona 3 (konkretnie z CV)"
         ],
         "weaknesses": [
-            "Słabość 1 z sugestią poprawy",
-            "Słabość 2 z sugestią poprawy",
-            "Słabość 3 z sugestią poprawy"
+            "Słabość 1 z sugestią poprawy (bazując na CV)",
+            "Słabość 2 z sugestią poprawy (bazując na CV)",
+            "Słabość 3 z sugestią poprawy (bazując na CV)"
         ],
-        "formatting_assessment": "Ocena layoutu, struktury i czytelności",
-        "content_quality": "Ocena jakości treści i sposobu opisywania doświadczeń",
+        "formatting_assessment": "Ocena layoutu, struktury i czytelności faktycznej treści",
+        "content_quality": "Ocena jakości treści rzeczywiście obecnej w CV",
         "ats_compatibility": "Czy CV przejdzie przez systemy automatycznej selekcji",
         "specific_improvements": [
-            "Konkretna poprawa 1",
-            "Konkretna poprawa 2",
-            "Konkretna poprawa 3"
+            "Konkretna poprawa 1 (oparta na faktach z CV)",
+            "Konkretna poprawa 2 (oparta na faktach z CV)",
+            "Konkretna poprawa 3 (oparta na faktach z CV)"
         ],
-        "interview_probability": "Prawdopodobieństwo zaproszenia na rozmowę i dlaczego",
-        "recruiter_summary": "Podsumowanie z perspektywy rekrutera"
+        "interview_probability": "Prawdopodobieństwo zaproszenia oparte na faktach z CV",
+        "recruiter_summary": "Podsumowanie z perspektywy rekrutera - tylko fakty z CV"
     }}
     
-    Bądź szczery, ale konstruktywny. Myśl jak prawdziwy rekruter oceniający kandydata.
+    Bądź szczery, ale konstruktywny. Oceniaj tylko to co rzeczywiście jest w CV, nie dodawaj od siebie.
     """
     
     return send_api_request(prompt, max_tokens=2000)
@@ -428,13 +437,19 @@ def generate_cover_letter(cv_text, job_description):
     Generate a cover letter based on a CV and job description
     """
     prompt = f"""
-    ZADANIE: Napisz spersonalizowany list motywacyjny w języku polskim na podstawie CV i opisu stanowiska.
+    ZADANIE: Napisz spersonalizowany list motywacyjny w języku polskim WYŁĄCZNIE na podstawie faktów z CV.
+    
+    ⚠️ ABSOLUTNE WYMAGANIA:
+    - Używaj TYLKO informacji faktycznie obecnych w CV
+    - NIE WYMYŚLAJ doświadczeń, projektów, osiągnięć ani umiejętności
+    - NIE DODAWAJ informacji, których nie ma w oryginalnym CV
+    - Jeśli w CV brakuje jakichś informacji - nie uzupełniaj ich
     
     List motywacyjny powinien:
     - Być profesjonalnie sformatowany
-    - Podkreślać istotne umiejętności i doświadczenia z CV
-    - Łączyć doświadczenie kandydata z wymaganiami stanowiska
-    - Zawierać przekonujące wprowadzenie i zakończenie
+    - Podkreślać umiejętności i doświadczenia faktycznie wymienione w CV
+    - Łączyć prawdziwe doświadczenie kandydata z wymaganiami stanowiska
+    - Zawierać przekonujące wprowadzenie oparte na faktach z CV
     - Mieć około 300-400 słów
     - Być napisany naturalnym, profesjonalnym językiem polskim
     
