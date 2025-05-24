@@ -214,7 +214,7 @@ def upload_cv():
     try:
         original_filename = file.filename if file and file.filename else 'wklejone_cv.txt'
         
-        if file and file.filename != '' and allowed_file(file.filename):
+        if file and file.filename and file.filename != '' and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             unique_filename = f"{uuid.uuid4()}_{filename}"
             file_path = os.path.join(UPLOAD_FOLDER, unique_filename)
@@ -480,4 +480,4 @@ if __name__ == '__main__':
         else:
             print("✅ Developer account already exists")
             
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5003, debug=True)
