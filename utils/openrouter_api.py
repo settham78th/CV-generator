@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1/chat/completions"
-MODEL = "google/gemini-flash-1.5-8b"
+MODEL = "nousresearch/hermes-3-llama-3.1-405b:free"
 
 DEEP_REASONING_PROMPT = """Jesteś ekspertem w dziedzinie HR i optymalizacji CV. Twoje zadanie to dostarczanie profesjonalnych, praktycznych i actionable porad dotyczących kariery. 
 
@@ -45,13 +45,10 @@ def send_api_request(prompt, max_tokens=2000):
     payload = {
         "model": MODEL,
         "messages": [
-            {"role": "system", "content": DEEP_REASONING_PROMPT + "\nYou are an expert resume editor and career advisor. Always respond in the same language as the CV or job description provided by the user."},
             {"role": "user", "content": prompt}
         ],
         "max_tokens": max_tokens,
-        "temperature": 0.3,
-        "top_p": 0.9,
-        "frequency_penalty": 0.1
+        "temperature": 0.7
     }
     
     try:
