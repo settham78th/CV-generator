@@ -21,6 +21,7 @@ from utils.openrouter_api import (
     analyze_keywords_match, check_grammar_and_style,
     optimize_for_position, generate_interview_tips
 )
+from utils.enhanced_job_extractor import extract_job_info_from_url
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -377,6 +378,38 @@ def verify_payment():
         return jsonify({
             'success': False,
             'message': f"Błąd podczas weryfikacji płatności: {str(e)}"
+        }), 500
+
+@app.route('/extract-job-info', methods=['POST'])
+@login_required
+def extract_job_info():
+    """Automatycznie wyciąga informacje o pracy z URL"""
+    try:
+        data = request.get_json()
+        job_url = data.get('job_url', '').strip()
+        
+        if not job_url:
+            return jsonify({
+                'success': False,
+                'message': 'Proszę podać URL do oferty pracy.'
+            }), 400
+        
+        # Wyciągnij informacje z URL
+        job_info = extract_job_info_from_url(job_url)
+        
+        return jsonify({
+            'success': True,
+            'job_title': job_info.get('job_title', ''),
+            'job_description': job_info.get('job_description', ''),
+            'company': job_info.get('company', ''),
+            'message': 'Informacje zostały automatycznie wyciągnięte z oferty!'
+        })
+        
+    except Exception as e:
+        logger.error(f"Error extracting job info: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': f'Nie udało się wyciągnąć informacji z linku: {str(e)}'
         }), 500
 
 @app.route('/process-cv', methods=['POST'])

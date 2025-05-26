@@ -96,8 +96,19 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label for="job-url" class="form-label">Link do oferty (opcjonalnie)</label>
-                        <input type="url" class="form-control" id="job-url" placeholder="https://...">
+                        <label for="job-url" class="form-label">Link do oferty</label>
+                        <div class="input-group">
+                            <input type="url" class="form-control" id="job-url" placeholder="https://pracuj.pl/praca/...">
+                            <button class="btn btn-outline-primary" type="button" id="extract-job-btn">
+                                <i class="fas fa-magic"></i> Wyciągnij automatycznie
+                            </button>
+                        </div>
+                        <div class="form-text">Wklej link a automatycznie wypełnimy stanowisko i opis!</div>
+                    </div>
+                    
+                    <div id="extraction-status" class="alert" style="display: none;">
+                        <i class="fas fa-spinner fa-spin me-2"></i>
+                        <span id="extraction-message">Wyciąganie informacji z oferty...</span>
                     </div>
                 </div>
             </div>

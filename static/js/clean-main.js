@@ -25,6 +25,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultContainer = document.getElementById('result-container');
     const copyResultBtn = document.getElementById('copy-result-btn');
     const compareVersionsBtn = document.getElementById('compare-versions-btn');
+    
+    // Elementy automatycznego wyciągania informacji z linku
+    const extractJobBtn = document.getElementById('extract-job-btn');
+    const extractionStatus = document.getElementById('extraction-status');
+    const extractionMessage = document.getElementById('extraction-message');
 
     // Przechowywanie tekstu CV
     let cvText = '';
@@ -267,6 +272,111 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Obsługa automatycznego wyciągania informacji z linku
+    if (extractJobBtn) {
+        extractJobBtn.addEventListener('click', function() {
+            const jobUrl = jobUrlInput ? jobUrlInput.value.trim() : '';
+            
+            if (!jobUrl) {
+                showError('Proszę wkleić link do oferty pracy.');
+                return;
+            }
+            
+            // Sprawdź czy URL wygląda poprawnie
+            if (!isValidUrl(jobUrl)) {
+                showError('Proszę podać prawidłowy link do oferty pracy.');
+                return;
+            }
+            
+            // Pokaż status wyciągania
+            if (extractionStatus) {
+                extractionStatus.style.display = 'block';
+                extractionStatus.className = 'alert alert-info';
+                if (extractionMessage) {
+                    extractionMessage.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Wyciąganie informacji z oferty...';
+                }
+            }
+            
+            // Wyłącz przycisk podczas przetwarzania
+            extractJobBtn.disabled = true;
+            extractJobBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Wyciąganie...';
+            
+            hideAlerts();
+            
+            // Wyślij zapytanie do serwera
+            fetch('/extract-job-info', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    job_url: jobUrl
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Wypełnij automatycznie pola
+                    if (data.job_title && jobTitleInput) {
+                        jobTitleInput.value = data.job_title;
+                        // Dodaj efekt highlight
+                        jobTitleInput.style.backgroundColor = '#d4edda';
+                        setTimeout(() => {
+                            jobTitleInput.style.backgroundColor = '';
+                        }, 2000);
+                    }
+                    
+                    if (data.job_description && jobDescriptionInput) {
+                        jobDescriptionInput.value = data.job_description;
+                        // Dodaj efekt highlight
+                        jobDescriptionInput.style.backgroundColor = '#d4edda';
+                        setTimeout(() => {
+                            jobDescriptionInput.style.backgroundColor = '';
+                        }, 2000);
+                    }
+                    
+                    // Pokaż sukces
+                    if (extractionStatus && extractionMessage) {
+                        extractionStatus.className = 'alert alert-success';
+                        extractionMessage.innerHTML = `<i class="fas fa-check-circle me-2"></i>${data.message}`;
+                        
+                        // Ukryj status po 5 sekundach
+                        setTimeout(() => {
+                            extractionStatus.style.display = 'none';
+                        }, 5000);
+                    }
+                    
+                    // Pokaż dodatkowe informacje o firmie
+                    if (data.company) {
+                        console.log(`Znaleziona firma: ${data.company}`);
+                    }
+                    
+                } else {
+                    showError(data.message || 'Nie udało się wyciągnąć informacji z linku.');
+                    
+                    if (extractionStatus && extractionMessage) {
+                        extractionStatus.className = 'alert alert-danger';
+                        extractionMessage.innerHTML = `<i class="fas fa-exclamation-circle me-2"></i>${data.message}`;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showError('Wystąpił błąd podczas wyciągania informacji z linku.');
+                
+                if (extractionStatus && extractionMessage) {
+                    extractionStatus.className = 'alert alert-danger';
+                    extractionMessage.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i>Wystąpił błąd podczas wyciągania informacji.';
+                }
+            })
+            .finally(() => {
+                // Przywróć przycisk
+                extractJobBtn.disabled = false;
+                extractJobBtn.innerHTML = '<i class="fas fa-magic"></i> Wyciągnij automatycznie';
+            });
+        });
+    }
+
     // Funkcje pomocnicze
     function showError(message) {
         if (errorMessageSpan) errorMessageSpan.textContent = message;
@@ -285,5 +395,14 @@ document.addEventListener('DOMContentLoaded', function() {
             .replace(/\n/g, '<br>')
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*(.*?)\*/g, '<em>$1</em>');
+    }
+
+    function isValidUrl(string) {
+        try {
+            const url = new URL(string);
+            return url.protocol === 'http:' || url.protocol === 'https:';
+        } catch (_) {
+            return false;
+        }
     }
 });
