@@ -1,555 +1,450 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/modern-premium.css') }}">
 <style>
-    .cv-generator-container {
-        background: var(--gradient-bg, linear-gradient(135deg, #1e3a8a 0%, #7c3aed 50%, #ec4899 100%));
-        min-height: 100vh;
-        padding: 120px 0 40px;
-    }
-
-    .cv-generator-card {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
-        border-radius: 30px;
-        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.12);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        overflow: hidden;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        min-height: 85vh;
-    }
-
-    .form-section {
-        padding: 40px;
-        overflow-y: auto;
-        max-height: 85vh;
-    }
-
-    .preview-section {
-        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-        padding: 40px;
-        border-left: 1px solid rgba(226, 232, 240, 0.5);
-        overflow-y: auto;
-        position: relative;
-        max-height: 85vh;
-    }
-
     .watermark {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%) rotate(-45deg);
-        font-size: 3.5rem;
-        color: rgba(99, 102, 241, 0.08);
-        font-weight: 900;
+        font-size: 3rem;
+        color: rgba(0, 123, 255, 0.1);
+        font-weight: bold;
         pointer-events: none;
         z-index: 10;
         user-select: none;
-        letter-spacing: 4px;
-    }
-
-    .cv-header-section {
-        text-align: center;
-        margin-bottom: 40px;
-    }
-
-    .cv-header-section h1 {
-        font-size: 2.8rem;
-        font-weight: 800;
-        margin-bottom: 15px;
-        background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .cv-header-section p {
-        color: #64748b;
-        font-size: 1.2rem;
-        font-weight: 500;
-    }
-
-    .premium-badge {
-        background: linear-gradient(135deg, #fbbf24, #f59e0b);
-        border: 2px solid #f59e0b;
-        border-radius: 20px;
-        padding: 25px;
-        margin: 25px 0;
-        text-align: center;
-        box-shadow: 0 10px 25px rgba(251, 191, 36, 0.2);
-    }
-
-    .premium-badge h3 {
-        color: #92400e;
-        margin-bottom: 12px;
-        font-size: 1.3rem;
-        font-weight: 700;
-    }
-
-    .premium-badge p {
-        color: #78350f;
-        margin-bottom: 8px;
-        font-weight: 500;
-    }
-
-    .form-section-title {
-        color: #1e293b;
-        font-size: 1.4rem;
-        font-weight: 700;
-        margin: 35px 0 25px 0;
-        padding-bottom: 12px;
-        border-bottom: 3px solid transparent;
-        background: linear-gradient(90deg, #6366f1, #8b5cf6) bottom;
-        background-size: 60px 3px;
-        background-repeat: no-repeat;
-        position: relative;
-    }
-
-    .form-group {
-        margin-bottom: 25px;
-    }
-
-    .form-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 10px;
-        color: #1e293b;
-        font-weight: 600;
-        font-size: 0.95rem;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 14px 18px;
-        border: 2px solid #e2e8f0;
-        border-radius: 15px;
-        font-size: 16px;
-        transition: all 0.3s ease;
-        background: #ffffff;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-    }
-
-    .form-control:focus {
-        outline: none;
-        border-color: #6366f1;
-        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-        transform: translateY(-1px);
-    }
-
-    .dynamic-section {
-        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-        padding: 25px;
-        border-radius: 20px;
-        margin-bottom: 20px;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        position: relative;
-    }
-
-    .section-header {
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 20px;
-    }
-
-    .btn-add {
-        background: linear-gradient(135deg, #6366f1, #8b5cf6);
-        color: white;
-        border: none;
-        padding: 14px 28px;
-        border-radius: 15px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-size: 15px;
-        margin-top: 20px;
-        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
-    }
-
-    .btn-add:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
-    }
-
-    .btn-remove {
-        background: linear-gradient(135deg, #ef4444, #dc2626);
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 10px;
-        font-size: 13px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-weight: 500;
-    }
-
-    .btn-remove:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
     }
 
     .cv-preview {
         background: white;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        padding: 40px;
-        font-family: 'Inter', sans-serif;
+        border-radius: 8px;
+        padding: 30px;
+        font-family: Georgia, serif;
         line-height: 1.6;
-        color: #1e293b;
+        color: #333;
         position: relative;
         user-select: none;
         -webkit-user-select: none;
         -moz-user-select: none;
         -ms-user-select: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-    .cv-preview-header {
+    .cv-header {
         text-align: center;
-        margin-bottom: 40px;
-        padding-bottom: 25px;
-        border-bottom: 3px solid #6366f1;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #007bff;
     }
 
     .cv-name {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: #6366f1;
-        margin-bottom: 12px;
+        font-size: 2rem;
+        font-weight: bold;
+        color: #007bff;
+        margin-bottom: 8px;
     }
 
-    .cv-job-title {
-        font-size: 1.3rem;
-        color: #64748b;
-        margin-bottom: 18px;
-        font-weight: 500;
+    .cv-title {
+        font-size: 1.1rem;
+        color: #6c757d;
+        margin-bottom: 15px;
     }
 
-    .cv-contact-info {
+    .cv-contact {
         display: flex;
         justify-content: center;
-        gap: 25px;
+        gap: 20px;
         flex-wrap: wrap;
-        font-size: 0.95rem;
-        color: #64748b;
-    }
-
-    .cv-section {
-        margin-bottom: 35px;
+        font-size: 0.9rem;
+        color: #6c757d;
     }
 
     .cv-section-title {
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: #6366f1;
-        margin-bottom: 20px;
-        padding-bottom: 8px;
-        border-bottom: 2px solid #e2e8f0;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #007bff;
+        margin-bottom: 15px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #dee2e6;
     }
 
     .experience-item, .education-item {
-        margin-bottom: 25px;
-        padding-left: 25px;
-        border-left: 4px solid #8b5cf6;
-        position: relative;
-    }
-
-    .experience-item::before, .education-item::before {
-        content: '';
-        position: absolute;
-        left: -8px;
-        top: 0;
-        width: 12px;
-        height: 12px;
-        background: #8b5cf6;
-        border-radius: 50%;
+        margin-bottom: 20px;
+        padding-left: 20px;
+        border-left: 3px solid #28a745;
     }
 
     .item-header {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom: 8px;
+        margin-bottom: 5px;
     }
 
     .item-title {
-        font-weight: 700;
-        color: #1e293b;
-        font-size: 1.1rem;
+        font-weight: bold;
+        color: #333;
     }
 
     .item-company {
-        color: #6366f1;
+        color: #007bff;
         font-weight: 600;
-        font-size: 1rem;
     }
 
     .item-date {
-        color: #64748b;
+        color: #6c757d;
         font-size: 0.9rem;
-        font-weight: 500;
-    }
-
-    .item-description {
-        margin-top: 10px;
-        color: #475569;
-        line-height: 1.6;
     }
 
     .skills-list {
         display: flex;
         flex-wrap: wrap;
-        gap: 12px;
+        gap: 8px;
     }
 
     .skill-tag {
-        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        background: #007bff;
         color: white;
-        padding: 8px 16px;
-        border-radius: 25px;
-        font-size: 0.9rem;
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 0.85rem;
         font-weight: 500;
-        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
     }
 
-    .download-section {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        z-index: 1000;
+    .dynamic-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #dee2e6;
     }
 
-    .btn-premium {
-        background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    .section-header {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 15px;
+    }
+
+    .btn-remove {
+        background: #dc3545;
         color: white;
         border: none;
-        padding: 16px 24px;
-        border-radius: 50px;
-        font-weight: 700;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 12px;
         cursor: pointer;
-        transition: all 0.3s ease;
-        font-size: 16px;
-        box-shadow: 0 10px 30px rgba(251, 191, 36, 0.3);
     }
 
-    .btn-premium:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 40px rgba(251, 191, 36, 0.4);
+    .btn-add {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+        margin-top: 15px;
     }
 
-    @media (max-width: 1024px) {
-        .cv-generator-card {
-            grid-template-columns: 1fr;
-            grid-template-rows: auto 1fr;
-        }
+    .premium-info {
+        background: linear-gradient(135deg, #ffc107, #fd7e14);
+        border: 1px solid #fd7e14;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
 
-        .preview-section {
-            border-left: none;
-            border-top: 1px solid rgba(226, 232, 240, 0.5);
-        }
+    .premium-info h5 {
+        color: #495057;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
 
-        .form-section, .preview-section {
-            max-height: none;
-        }
+    .premium-info p {
+        color: #6c757d;
+        margin-bottom: 0;
     }
 
     @media (max-width: 768px) {
-        .form-row {
-            grid-template-columns: 1fr;
+        .row {
+            flex-direction: column;
         }
 
-        .cv-contact-info {
+        .cv-contact {
             flex-direction: column;
-            gap: 12px;
+            gap: 8px;
         }
 
         .item-header {
             flex-direction: column;
             align-items: flex-start;
         }
-
-        .cv-generator-container {
-            padding: 100px 15px 40px;
-        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="cv-generator-container">
-    <div class="container">
-        <div class="cv-generator-card">
-            <div class="form-section">
-                <div class="cv-header-section">
-                    <h1>CV Generator Pro</h1>
-                    <p>Stwórz profesjonalne CV w kilka minut</p>
+<div class="container mt-4">
+    <!-- Header Section -->
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary">CV Generator Pro</h1>
+        <p class="lead text-muted">Stwórz profesjonalne CV w kilka minut</p>
+    </div>
+
+    <!-- Premium Info Alert -->
+    <div class="premium-info">
+        <h5><i class="fas fa-crown me-2"></i>Premium CV Generator</h5>
+        <p>Stwórz profesjonalne CV z podglądem na żywo. <strong>Koszt pobrania PDF: 9,99 zł</strong></p>
+    </div>
+
+    <div class="row">
+        <!-- Lewa kolumna: Formularz -->
+        <div class="col-lg-6">
+            <!-- Dane osobowe -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-user me-2"></i>Dane osobowe</h5>
                 </div>
-
-                <div class="premium-badge">
-                    <h3>💎 Premium CV Generator</h3>
-                    <p>Stwórz profesjonalne CV z podglądem na żywo</p>
-                    <p><strong>Koszt pobrania PDF: 9,99 zł</strong></p>
+                <div class="card-body">
+                    <form id="cvForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="firstName" class="form-label">Imię</label>
+                                    <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Jan">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="lastName" class="form-label">Nazwisko</label>
+                                    <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Kowalski">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="jobTitle" class="form-label">Stanowisko</label>
+                            <input type="text" class="form-control" id="jobTitle" name="jobTitle" placeholder="Frontend Developer">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="jan.kowalski@email.com">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">Telefon</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="+48 123 456 789">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="city" class="form-label">Miasto</label>
+                                    <input type="text" class="form-control" id="city" name="city" placeholder="Warszawa">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="linkedin" class="form-label">LinkedIn</label>
+                                    <input type="url" class="form-control" id="linkedin" name="linkedin" placeholder="linkedin.com/in/jankowalski">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
+            </div>
 
-                <form id="cvForm">
-                    <div class="form-section-title">Dane osobowe</div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="firstName">Imię</label>
-                            <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Jan">
-                        </div>
-                        <div class="form-group">
-                            <label for="lastName">Nazwisko</label>
-                            <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Kowalski">
-                        </div>
+            <!-- O mnie -->
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-user-edit me-2"></i>O mnie</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="summary" class="form-label">Krótkie podsumowanie</label>
+                        <textarea class="form-control" id="summary" name="summary" rows="4" placeholder="Opisz siebie w kilku zdaniach..."></textarea>
                     </div>
-                    <div class="form-group">
-                        <label for="jobTitle">Stanowisko</label>
-                        <input type="text" class="form-control" id="jobTitle" name="jobTitle" placeholder="Frontend Developer">
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="jan.kowalski@email.com">
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Telefon</label>
-                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="+48 123 456 789">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="city">Miasto</label>
-                            <input type="text" class="form-control" id="city" name="city" placeholder="Warszawa">
-                        </div>
-                        <div class="form-group">
-                            <label for="linkedin">LinkedIn</label>
-                            <input type="url" class="form-control" id="linkedin" name="linkedin" placeholder="linkedin.com/in/jankowalski">
-                        </div>
-                    </div>
+                </div>
+            </div>
 
-                    <div class="form-section-title">O mnie</div>
-                    <div class="form-group">
-                        <label for="summary">Krótkie podsumowanie</label>
-                        <textarea class="form-control" id="summary" name="summary" placeholder="Opisz siebie w kilku zdaniach..."></textarea>
-                    </div>
-
-                    <div class="form-section-title">Doświadczenie zawodowe</div>
+            <!-- Doświadczenie zawodowe -->
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-briefcase me-2"></i>Doświadczenie zawodowe</h5>
+                </div>
+                <div class="card-body">
                     <div id="experienceContainer">
                         <div class="dynamic-section">
                             <div class="section-header">
-                                <button type="button" class="btn-remove" onclick="removeSection(this)">Usuń</button>
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeSection(this)">
+                                    <i class="fas fa-trash"></i> Usuń
+                                </button>
                             </div>
-                            <div class="form-group">
-                                <label>Stanowisko</label>
-                                <input type="text" class="form-control" name="expTitle" placeholder="Frontend Developer">
-                            </div>
-                            <div class="form-group">
-                                <label>Firma</label>
-                                <input type="text" class="form-control" name="expCompany" placeholder="Tech Company">
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Data rozpoczęcia</label>
-                                    <input type="month" class="form-control" name="expStartDate">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Stanowisko</label>
+                                        <input type="text" class="form-control" name="expTitle" placeholder="Frontend Developer">
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Data zakończenia</label>
-                                    <input type="month" class="form-control" name="expEndDate">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Firma</label>
+                                        <input type="text" class="form-control" name="expCompany" placeholder="Tech Company">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label>Opis obowiązków</label>
-                                <textarea class="form-control" name="expDescription" placeholder="Opisz swoje obowiązki i osiągnięcia..."></textarea>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Data rozpoczęcia</label>
+                                        <input type="month" class="form-control" name="expStartDate">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Data zakończenia</label>
+                                        <input type="month" class="form-control" name="expEndDate">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Opis obowiązków</label>
+                                <textarea class="form-control" name="expDescription" rows="3" placeholder="Opisz swoje obowiązki i osiągnięcia..."></textarea>
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn-add" onclick="addExperience()">+ Dodaj doświadczenie</button>
+                    <button type="button" class="btn btn-primary" onclick="addExperience()">
+                        <i class="fas fa-plus me-2"></i>Dodaj doświadczenie
+                    </button>
+                </div>
+            </div>
 
-                    <div class="form-section-title">Wykształcenie</div>
+            <!-- Wykształcenie -->
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-graduation-cap me-2"></i>Wykształcenie</h5>
+                </div>
+                <div class="card-body">
                     <div id="educationContainer">
                         <div class="dynamic-section">
                             <div class="section-header">
-                                <button type="button" class="btn-remove" onclick="removeSection(this)">Usuń</button>
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeSection(this)">
+                                    <i class="fas fa-trash"></i> Usuń
+                                </button>
                             </div>
-                            <div class="form-group">
-                                <label>Kierunek studiów</label>
-                                <input type="text" class="form-control" name="eduDegree" placeholder="Informatyka">
-                            </div>
-                            <div class="form-group">
-                                <label>Uczelnia</label>
-                                <input type="text" class="form-control" name="eduSchool" placeholder="Uniwersytet Warszawski">
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Rok rozpoczęcia</label>
-                                    <input type="number" class="form-control" name="eduStartYear" min="1980" max="2030">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Kierunek studiów</label>
+                                        <input type="text" class="form-control" name="eduDegree" placeholder="Informatyka">
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Rok ukończenia</label>
-                                    <input type="number" class="form-control" name="eduEndYear" min="1980" max="2030">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Uczelnia</label>
+                                        <input type="text" class="form-control" name="eduSchool" placeholder="Uniwersytet Warszawski">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Rok rozpoczęcia</label>
+                                        <input type="number" class="form-control" name="eduStartYear" min="1980" max="2030">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Rok ukończenia</label>
+                                        <input type="number" class="form-control" name="eduEndYear" min="1980" max="2030">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn-add" onclick="addEducation()">+ Dodaj wykształcenie</button>
-
-                    <div class="form-section-title">Umiejętności</div>
-                    <div class="form-group">
-                        <label for="skills">Umiejętności (oddziel przecinkami)</label>
-                        <textarea class="form-control" id="skills" name="skills" placeholder="JavaScript, React, CSS, HTML, Node.js"></textarea>
-                    </div>
-                </form>
+                    <button type="button" class="btn btn-primary" onclick="addEducation()">
+                        <i class="fas fa-plus me-2"></i>Dodaj wykształcenie
+                    </button>
+                </div>
             </div>
 
-            <div class="preview-section">
-                <div class="watermark">CV OPTIMIZER PRO</div>
-                <div id="cvPreview" class="cv-preview">
-                    <div class="cv-preview-header">
-                        <div class="cv-name" id="previewName">Twoje Imię Nazwisko</div>
-                        <div class="cv-job-title" id="previewTitle">Twoje Stanowisko</div>
-                        <div class="cv-contact-info">
-                            <span id="previewEmail">email@example.com</span>
-                            <span id="previewPhone">+48 123 456 789</span>
-                            <span id="previewCity">Miasto</span>
-                            <span id="previewLinkedin">LinkedIn</span>
-                        </div>
-                    </div>
-
-                    <div id="summarySection" class="cv-section">
-                        <div class="cv-section-title">O mnie</div>
-                        <div id="previewSummary">Twoje podsumowanie pojawi się tutaj...</div>
-                    </div>
-
-                    <div id="experienceSection" class="cv-section">
-                        <div class="cv-section-title">Doświadczenie zawodowe</div>
-                        <div id="previewExperience"></div>
-                    </div>
-
-                    <div id="educationSection" class="cv-section">
-                        <div class="cv-section-title">Wykształcenie</div>
-                        <div id="previewEducation"></div>
-                    </div>
-
-                    <div id="skillsSection" class="cv-section">
-                        <div class="cv-section-title">Umiejętności</div>
-                        <div id="previewSkills" class="skills-list"></div>
+            <!-- Umiejętności -->
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-cogs me-2"></i>Umiejętności</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="skills" class="form-label">Umiejętności (oddziel przecinkami)</label>
+                        <textarea class="form-control" id="skills" name="skills" rows="3" placeholder="JavaScript, React, CSS, HTML, Node.js"></textarea>
+                        <div class="form-text">Wpisz swoje umiejętności oddzielone przecinkami</div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-<div class="download-section">
-    <button class="btn-premium" onclick="initiatePayment()">💳 Zapłać i pobierz PDF (9,99 zł)</button>
+        <!-- Prawa kolumna: Podgląd CV -->
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="fas fa-eye me-2"></i>Podgląd CV</h5>
+                </div>
+                <div class="card-body position-relative">
+                    <div class="watermark">CV OPTIMIZER PRO</div>
+                    <div id="cvPreview" class="cv-preview">
+                        <div class="cv-header">
+                            <div class="cv-name" id="previewName">Twoje Imię Nazwisko</div>
+                            <div class="cv-title" id="previewTitle">Twoje Stanowisko</div>
+                            <div class="cv-contact">
+                                <span id="previewEmail">email@example.com</span>
+                                <span id="previewPhone">+48 123 456 789</span>
+                                <span id="previewCity">Miasto</span>
+                                <span id="previewLinkedin">LinkedIn</span>
+                            </div>
+                        </div>
+
+                        <div id="summarySection" class="cv-section">
+                            <div class="cv-section-title">O mnie</div>
+                            <div id="previewSummary">Twoje podsumowanie pojawi się tutaj...</div>
+                        </div>
+
+                        <div id="experienceSection" class="cv-section">
+                            <div class="cv-section-title">Doświadczenie zawodowe</div>
+                            <div id="previewExperience"></div>
+                        </div>
+
+                        <div id="educationSection" class="cv-section">
+                            <div class="cv-section-title">Wykształcenie</div>
+                            <div id="previewEducation"></div>
+                        </div>
+
+                        <div id="skillsSection" class="cv-section">
+                            <div class="cv-section-title">Umiejętności</div>
+                            <div id="previewSkills" class="skills-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Przycisk płatności -->
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-download me-2"></i>Pobierz PDF</h5>
+                </div>
+                <div class="card-body text-center">
+                    <p class="mb-3">Aby pobrać czyste CV bez znaku wodnego w formacie PDF</p>
+                    <button class="btn btn-warning btn-lg" onclick="initiatePayment()">
+                        <i class="fas fa-credit-card me-2"></i>Zapłać i pobierz PDF (9,99 zł)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
