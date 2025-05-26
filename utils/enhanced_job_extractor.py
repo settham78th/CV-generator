@@ -122,14 +122,24 @@ def extract_by_domain(soup, domain):
                 job_info['job_description'] = desc_elem.get_text(separator='\n', strip=True)
                 
         elif 'olx.pl' in domain:
-            # OLX Praca
-            title_elem = soup.select_one('h1[data-cy="ad_title"], .css-1juynto')
+            # OLX Praca - zaktualizowane selektory
+            title_elem = soup.select_one('h1, [data-cy="ad_title"], .css-1juynto, .ad-title')
             if title_elem:
                 job_info['job_title'] = title_elem.get_text(strip=True)
             
-            desc_elem = soup.select_one('[data-cy="ad_description"], .css-g5mtl5')
-            if desc_elem:
-                job_info['job_description'] = desc_elem.get_text(separator='\n', strip=True)
+            # Szukaj opisu w różnych miejscach
+            desc_containers = soup.select('[data-cy="ad_description"], .css-g5mtl5, .description, .ad-description, .ad-description-full')
+            if desc_containers:
+                job_info['job_description'] = desc_containers[0].get_text(separator='\n', strip=True)
+            else:
+                # Jeśli nie ma specyficznych selektorów, szukaj w całej treści
+                # Znajdź wszystkie div-y i p-ki które mogą zawierać opis
+                potential_desc = soup.select('div:has(p), section, article, .content, .details')
+                for container in potential_desc:
+                    text = container.get_text(separator='\n', strip=True)
+                    if len(text) > 100 and 'opis' in text.lower() or 'stanowisko' in text.lower() or 'wymagania' in text.lower():
+                        job_info['job_description'] = text
+                        break
                 
         elif 'justjoin.it' in domain:
             # JustJoin.it
@@ -185,6 +195,25 @@ def extract_generic(soup, existing_info):
                 if len(desc_text) > 100:  # Minimum dla opisu
                     existing_info['job_description'] = desc_text
                     break
+    
+    # Specjalna obsługa dla OLX - wyciągnij tekst z całej strony i filtruj
+    if not existing_info['job_description'] and 'olx.pl' in soup.get_text().lower():
+        all_text = soup.get_text(separator='\n', strip=True)
+        lines = [line.strip() for line in all_text.split('\n') if line.strip()]
+        
+        # Znajdź linie które mogą zawierać opis pracy
+        job_related_lines = []
+        job_keywords = ['stanowisko', 'praca', 'wymagania', 'obowiązki', 'opis', 'oferujemy', 'poszukujemy', 'mile widziane']
+        
+        for i, line in enumerate(lines):
+            if len(line) > 20 and any(keyword in line.lower() for keyword in job_keywords):
+                # Dodaj tę linię i kilka następnych
+                for j in range(max(0, i-1), min(len(lines), i+5)):
+                    if lines[j] not in job_related_lines and len(lines[j]) > 10:
+                        job_related_lines.append(lines[j])
+        
+        if job_related_lines:
+            existing_info['job_description'] = '\n'.join(job_related_lines[:20])  # Maksymalnie 20 linii
     
     # Jeśli nadal nie ma opisu, weź text z body (z filtrowaniem)
     if not existing_info['job_description'] and soup.body:

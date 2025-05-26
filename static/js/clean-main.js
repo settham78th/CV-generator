@@ -313,8 +313,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     job_url: jobUrl
                 })
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('📡 Response status:', response.status);
+                console.log('📡 Response headers:', response.headers);
+                
+                if (!response.ok) {
+                    console.error('❌ HTTP Error:', response.status, response.statusText);
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.json();
+            })
             .then(data => {
+                console.log('📊 Response data:', data);
                 if (data.success) {
                     // Wypełnij automatycznie pola
                     if (data.job_title && jobTitleInput) {
