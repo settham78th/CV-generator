@@ -1,6 +1,133 @@
 {% extends 'base.html' %}
 
 {% block head %}
+<script>
+// Sprawdzenie czy JavaScript się ładuje
+console.log('🚀 JavaScript załadowany!');
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('📡 DOM załadowany!');
+    
+    // Elementy
+    const extractJobBtn = document.getElementById('extract-job-btn');
+    const jobUrlInput = document.getElementById('job-url');
+    const jobTitleInput = document.getElementById('job-title');
+    const jobDescriptionInput = document.getElementById('job-description');
+    const extractionStatus = document.getElementById('extraction-status');
+    const extractionMessage = document.getElementById('extraction-message');
+    
+    console.log('🔍 Elementy znalezione:', {
+        extractJobBtn: !!extractJobBtn,
+        jobUrlInput: !!jobUrlInput,
+        jobTitleInput: !!jobTitleInput,
+        jobDescriptionInput: !!jobDescriptionInput
+    });
+    
+    if (extractJobBtn) {
+        console.log('✅ Dodawanie event listenera do przycisku');
+        extractJobBtn.addEventListener('click', function() {
+            console.log('🎯 Przycisk kliknięty!');
+            
+            const jobUrl = jobUrlInput ? jobUrlInput.value.trim() : '';
+            console.log('🔗 URL:', jobUrl);
+            
+            if (!jobUrl) {
+                alert('Proszę wkleić link do oferty pracy.');
+                return;
+            }
+            
+            // Zmień przycisk na loading
+            extractJobBtn.disabled = true;
+            extractJobBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Wyciąganie...';
+            
+            // Pokaż status
+            if (extractionStatus) {
+                extractionStatus.style.display = 'block';
+                extractionStatus.className = 'alert alert-info';
+                if (extractionMessage) {
+                    extractionMessage.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Wyciąganie informacji z oferty...';
+                }
+            }
+            
+            console.log('📤 Wysyłanie zapytania...');
+            
+            // Wyślij zapytanie
+            fetch('/extract-job-info', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    job_url: jobUrl
+                })
+            })
+            .then(response => {
+                console.log('📡 Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('📊 Response data:', data);
+                
+                if (data.success) {
+                    // Wypełnij pola
+                    if (data.job_title && jobTitleInput) {
+                        jobTitleInput.value = data.job_title;
+                        jobTitleInput.style.backgroundColor = '#d4edda';
+                        setTimeout(() => {
+                            jobTitleInput.style.backgroundColor = '';
+                        }, 2000);
+                    }
+                    
+                    if (data.job_description && jobDescriptionInput) {
+                        jobDescriptionInput.value = data.job_description;
+                        jobDescriptionInput.style.backgroundColor = '#d4edda';
+                        setTimeout(() => {
+                            jobDescriptionInput.style.backgroundColor = '';
+                        }, 2000);
+                    }
+                    
+                    // Pokaż sukces
+                    if (extractionStatus && extractionMessage) {
+                        extractionStatus.className = 'alert alert-success';
+                        extractionMessage.innerHTML = `<i class="fas fa-check-circle me-2"></i>${data.message}`;
+                        setTimeout(() => {
+                            extractionStatus.style.display = 'none';
+                        }, 5000);
+                    }
+                    
+                } else {
+                    console.error('❌ Error:', data.message);
+                    alert(`Błąd: ${data.message}`);
+                    
+                    if (extractionStatus && extractionMessage) {
+                        extractionStatus.className = 'alert alert-danger';
+                        extractionMessage.innerHTML = `<i class="fas fa-exclamation-circle me-2"></i>${data.message}`;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('❌ Fetch error:', error);
+                alert(`Wystąpił błąd: ${error.message}`);
+                
+                if (extractionStatus && extractionMessage) {
+                    extractionStatus.className = 'alert alert-danger';
+                    extractionMessage.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i>Wystąpił błąd podczas wyciągania informacji.';
+                }
+            })
+            .finally(() => {
+                // Przywróć przycisk
+                extractJobBtn.disabled = false;
+                extractJobBtn.innerHTML = '<i class="fas fa-magic"></i> Wyciągnij automatycznie';
+            });
+        });
+    } else {
+        console.error('❌ Nie znaleziono przycisku extract-job-btn!');
+    }
+});
+</script>
 <script src="{{ url_for('static', filename='js/clean-main.js') }}" defer></script>
 {% endblock %}
 
