@@ -35,3 +35,4 @@ flask-bcrypt
 flask-login
 flask-wtf
 wtforms
+reportlab

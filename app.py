@@ -9,6 +9,13 @@ from flask_bcrypt import Bcrypt
 import uuid
 import stripe
 import json
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter, A4
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import inch
+import io
+import base64
 from datetime import datetime
 from models import db, User, CVUpload, AnalysisResult
 from forms import LoginForm, RegistrationForm, UserProfileForm, ChangePasswordForm
@@ -220,6 +227,12 @@ def checkout():
     stripe_public_key = os.environ.get('VITE_STRIPE_PUBLIC_KEY')
     return render_template('checkout.html', stripe_public_key=stripe_public_key)
 
+@app.route('/cv-generator')
+@login_required
+def cv_generator():
+    """CV Generator page"""
+    return render_template('cv_generator.html')
+
 @app.route('/payment-success')
 def payment_success():
     return render_template('payment_success.html')
@@ -379,6 +392,205 @@ def verify_payment():
             'success': False,
             'message': f"Błąd podczas weryfikacji płatności: {str(e)}"
         }), 500
+
+@app.route('/create-cv-payment', methods=['POST'])
+@login_required
+def create_cv_payment():
+    """Create payment intent for CV generator"""
+    try:
+        cv_data = request.get_json()
+        
+        # Store CV data in session for later use
+        session['cv_data'] = cv_data
+        
+        # Create payment intent for CV generation (9.99 PLN)
+        intent = stripe.PaymentIntent.create(
+            amount=999,  # 9.99 PLN in grosze
+            currency='pln',
+            metadata={
+                'service': 'cv_generator',
+                'user_id': current_user.id
+            }
+        )
+        
+        return jsonify({
+            'success': True,
+            'client_secret': intent.client_secret,
+            'checkout_url': f'/checkout?client_secret={intent.client_secret}&service=cv_generator'
+        })
+        
+    except Exception as e:
+        logger.error(f"Error creating CV payment: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': f"Błąd podczas tworzenia płatności: {str(e)}"
+        }), 500
+
+@app.route('/generate-cv-pdf', methods=['POST'])
+@login_required
+def generate_cv_pdf():
+    """Generate PDF from CV data after payment verification"""
+    try:
+        data = request.get_json()
+        payment_intent_id = data.get('payment_intent_id')
+        
+        if not payment_intent_id:
+            return jsonify({
+                'success': False,
+                'message': 'Brak ID płatności'
+            }), 400
+        
+        # Verify payment
+        intent = stripe.PaymentIntent.retrieve(payment_intent_id)
+        
+        if intent.status != 'succeeded':
+            return jsonify({
+                'success': False,
+                'message': 'Płatność nie została zakończona'
+            }), 400
+        
+        # Get CV data from session
+        cv_data = session.get('cv_data')
+        if not cv_data:
+            return jsonify({
+                'success': False,
+                'message': 'Brak danych CV do wygenerowania'
+            }), 400
+        
+        # Generate PDF
+        pdf_buffer = generate_cv_pdf_file(cv_data)
+        
+        # Encode as base64 for frontend
+        pdf_base64 = base64.b64encode(pdf_buffer.getvalue()).decode()
+        
+        return jsonify({
+            'success': True,
+            'pdf_data': pdf_base64,
+            'filename': f"CV_{cv_data.get('firstName', 'CV')}_{cv_data.get('lastName', '')}.pdf"
+        })
+        
+    except Exception as e:
+        logger.error(f"Error generating CV PDF: {str(e)}")
+        return jsonify({
+            'success': False,
+            'message': f"Błąd podczas generowania PDF: {str(e)}"
+        }), 500
+
+def generate_cv_pdf_file(cv_data):
+    """Generate PDF file from CV data"""
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4)
+    styles = getSampleStyleSheet()
+    story = []
+    
+    # Custom styles
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=24,
+        textColor=colors.HexColor('#6366f1'),
+        spaceAfter=30,
+        alignment=1  # Center
+    )
+    
+    subtitle_style = ParagraphStyle(
+        'CustomSubtitle',
+        parent=styles['Heading2'],
+        fontSize=16,
+        textColor=colors.HexColor('#4f46e5'),
+        spaceAfter=20
+    )
+    
+    normal_style = ParagraphStyle(
+        'CustomNormal',
+        parent=styles['Normal'],
+        fontSize=11,
+        spaceAfter=12
+    )
+    
+    # Header
+    name = f"{cv_data.get('firstName', '')} {cv_data.get('lastName', '')}".strip()
+    story.append(Paragraph(name, title_style))
+    
+    job_title = cv_data.get('jobTitle', '')
+    if job_title:
+        story.append(Paragraph(job_title, styles['Heading3']))
+    
+    # Contact info
+    contact_info = []
+    if cv_data.get('email'):
+        contact_info.append(cv_data['email'])
+    if cv_data.get('phone'):
+        contact_info.append(cv_data['phone'])
+    if cv_data.get('city'):
+        contact_info.append(cv_data['city'])
+    if cv_data.get('linkedin'):
+        contact_info.append(cv_data['linkedin'])
+    
+    if contact_info:
+        story.append(Paragraph(' | '.join(contact_info), normal_style))
+    
+    story.append(Spacer(1, 20))
+    
+    # Summary
+    if cv_data.get('summary'):
+        story.append(Paragraph("O mnie", subtitle_style))
+        story.append(Paragraph(cv_data['summary'], normal_style))
+        story.append(Spacer(1, 15))
+    
+    # Experience
+    experiences = cv_data.get('experiences', [])
+    if experiences and any(exp.get('title') or exp.get('company') for exp in experiences):
+        story.append(Paragraph("Doświadczenie zawodowe", subtitle_style))
+        for exp in experiences:
+            if exp.get('title') or exp.get('company'):
+                # Title and company
+                exp_header = f"<b>{exp.get('title', 'Stanowisko')}</b> - {exp.get('company', 'Firma')}"
+                story.append(Paragraph(exp_header, normal_style))
+                
+                # Dates
+                start_date = exp.get('startDate', '')
+                end_date = exp.get('endDate', 'obecnie')
+                if start_date:
+                    date_range = f"{start_date} - {end_date}"
+                    story.append(Paragraph(date_range, normal_style))
+                
+                # Description
+                if exp.get('description'):
+                    story.append(Paragraph(exp['description'], normal_style))
+                
+                story.append(Spacer(1, 10))
+    
+    # Education
+    education = cv_data.get('education', [])
+    if education and any(edu.get('degree') or edu.get('school') for edu in education):
+        story.append(Paragraph("Wykształcenie", subtitle_style))
+        for edu in education:
+            if edu.get('degree') or edu.get('school'):
+                # Degree and school
+                edu_header = f"<b>{edu.get('degree', 'Kierunek')}</b> - {edu.get('school', 'Uczelnia')}"
+                story.append(Paragraph(edu_header, normal_style))
+                
+                # Years
+                start_year = edu.get('startYear', '')
+                end_year = edu.get('endYear', '')
+                if start_year or end_year:
+                    year_range = f"{start_year} - {end_year}"
+                    story.append(Paragraph(year_range, normal_style))
+                
+                story.append(Spacer(1, 10))
+    
+    # Skills
+    skills = cv_data.get('skills', '')
+    if skills:
+        story.append(Paragraph("Umiejętności", subtitle_style))
+        skills_list = [skill.strip() for skill in skills.split(',') if skill.strip()]
+        skills_text = ' • '.join(skills_list)
+        story.append(Paragraph(skills_text, normal_style))
+    
+    doc.build(story)
+    buffer.seek(0)
+    return buffer
 
 
 @app.route('/process-cv', methods=['POST'])
