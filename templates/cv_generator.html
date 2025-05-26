@@ -2,6 +2,181 @@
 
 {% block head %}
 <style>
+    /* Hero Section Styles */
+    .hero-section {
+        min-height: 60vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        position: relative;
+        display: flex;
+        align-items: center;
+        margin-top: -80px;
+        padding-top: 100px;
+    }
+
+    .hero-gradient {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, 
+            rgba(102, 126, 234, 0.9) 0%, 
+            rgba(118, 75, 162, 0.9) 50%,
+            rgba(255, 94, 77, 0.8) 100%);
+        z-index: 1;
+    }
+
+    .hero-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 2px, transparent 2px),
+            radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 2px, transparent 2px);
+        background-size: 50px 50px;
+        z-index: 2;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 3;
+        color: white;
+    }
+
+    .hero-icon {
+        font-size: 4rem;
+        color: rgba(255, 255, 255, 0.9);
+        text-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        line-height: 1.2;
+    }
+
+    .premium-badge {
+        display: inline-block;
+        background: linear-gradient(45deg, #ffd700, #ffed4e);
+        color: #333;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 600;
+        margin-left: 15px;
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+        from { box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4); }
+        to { box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6); }
+    }
+
+    .hero-subtitle {
+        font-size: 1.3rem;
+        font-weight: 300;
+        opacity: 0.95;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .hero-features {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin: 30px 0;
+        flex-wrap: wrap;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 12px 20px;
+        border-radius: 25px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .feature-item:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .feature-item i {
+        font-size: 1.2rem;
+    }
+
+    .pricing-info {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 15px 30px;
+        border-radius: 30px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        display: inline-block;
+        margin-top: 20px;
+    }
+
+    .price-label {
+        opacity: 0.9;
+        margin-right: 10px;
+    }
+
+    .price-value {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #ffd700;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-wave {
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 100%;
+        overflow: hidden;
+        line-height: 0;
+        z-index: 3;
+    }
+
+    .hero-wave svg {
+        position: relative;
+        display: block;
+        width: calc(100% + 1.3px);
+        height: 60px;
+        fill: #ffffff;
+    }
+
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .premium-badge {
+            display: block;
+            margin: 15px auto 0;
+            width: fit-content;
+        }
+        
+        .hero-features {
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .feature-item {
+            width: 100%;
+            max-width: 280px;
+            justify-content: center;
+        }
+    }
+
     .watermark {
         position: absolute;
         top: 50%;
@@ -185,18 +360,59 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <!-- Header Section -->
-    <div class="text-center mb-5">
-        <h1 class="display-4 fw-bold text-primary">CV Generator Pro</h1>
-        <p class="lead text-muted">Stwórz profesjonalne CV w kilka minut</p>
+<div class="container-fluid p-0 mb-4">
+    <!-- Modern Hero Section -->
+    <div class="hero-section position-relative overflow-hidden">
+        <div class="hero-gradient"></div>
+        <div class="hero-pattern"></div>
+        <div class="container py-5">
+            <div class="row align-items-center min-vh-50">
+                <div class="col-lg-8 mx-auto text-center">
+                    <div class="hero-content">
+                        <div class="hero-icon mb-4">
+                            <i class="fas fa-magic"></i>
+                        </div>
+                        <h1 class="hero-title mb-3">
+                            CV Generator Pro
+                            <span class="premium-badge">
+                                <i class="fas fa-crown"></i>
+                                Premium
+                            </span>
+                        </h1>
+                        <p class="hero-subtitle mb-4">
+                            Stwórz profesjonalne CV w kilka minut z podglądem na żywo
+                        </p>
+                        <div class="hero-features">
+                            <div class="feature-item">
+                                <i class="fas fa-eye"></i>
+                                <span>Podgląd na żywo</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-download"></i>
+                                <span>PDF do pobrania</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Profesjonalny design</span>
+                            </div>
+                        </div>
+                        <div class="pricing-info">
+                            <span class="price-label">Koszt pobrania PDF:</span>
+                            <span class="price-value">9,99 zł</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-wave">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"></path>
+            </svg>
+        </div>
     </div>
+</div>
 
-    <!-- Premium Info Alert -->
-    <div class="premium-info">
-        <h5><i class="fas fa-crown me-2"></i>Premium CV Generator</h5>
-        <p>Stwórz profesjonalne CV z podglądem na żywo. <strong>Koszt pobrania PDF: 9,99 zł</strong></p>
-    </div>
+<div class="container">
 
     <div class="row">
         <!-- Lewa kolumna: Formularz -->
