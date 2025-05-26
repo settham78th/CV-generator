@@ -76,7 +76,38 @@ def allowed_file(filename):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    # Enhanced index with user statistics
+    user_stats = {
+        'total_uploads': 0,
+        'total_analyses': 0,
+        'user_level': 'Początkujący',
+        'improvement_score': 0
+    }
+    
+    if current_user.is_authenticated:
+        # Calculate user statistics
+        user_cvs = CVUpload.query.filter_by(user_id=current_user.id).all()
+        total_analyses = sum(len(cv.analysis_results) for cv in user_cvs)
+        
+        user_stats = {
+            'total_uploads': len(user_cvs),
+            'total_analyses': total_analyses,
+            'user_level': get_user_level(len(user_cvs)),
+            'improvement_score': min(95, 20 + total_analyses * 8)
+        }
+    
+    return render_template('modern-index.html', user_stats=user_stats)
+
+def get_user_level(cv_count):
+    """Determine user level based on CV uploads"""
+    if cv_count >= 5:
+        return 'Diamond 💎'
+    elif cv_count >= 3:
+        return 'Gold 🥇'
+    elif cv_count >= 1:
+        return 'Silver 🥈'
+    else:
+        return 'Bronze 🥉'
 
 @app.route('/ads.txt')
 def ads_txt():

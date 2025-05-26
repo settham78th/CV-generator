@@ -21,6 +21,14 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modern-premium.css') }}">
+    
+    <!-- Additional Performance Optimizations -->
+    <link rel="preload" href="{{ url_for('static', filename='css/modern-premium.css') }}" as="style">
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+    
+    {% block extra_styles %}{% endblock %}
     
     <!-- Meta tags for SEO -->
     <meta name="description" content="Profesjonalne narzędzie AI do optymalizacji CV. Zwiększ swoje szanse na wymarzoną pracę dzięki analizie i ulepszeniom opartym na sztucznej inteligencji.">
