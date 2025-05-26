@@ -241,7 +241,8 @@ def about():
 @app.route('/privacy')
 def privacy():
     """Privacy policy page"""
-    return render_template('privacy.html')
+    from datetime import datetime
+    return render_template('privacy.html', moment=datetime.now())
 
 @app.route('/payment-success')
 def payment_success():
