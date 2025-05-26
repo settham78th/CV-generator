@@ -1,0 +1,354 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+    .premium-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 60px 0;
+        margin-top: -80px;
+        padding-top: 140px;
+    }
+
+    .pricing-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px 30px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .pricing-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .pricing-card.featured {
+        border: 3px solid #ffd700;
+        transform: scale(1.05);
+    }
+
+    .pricing-card.featured::before {
+        content: 'NAJPOPULARNIEJSZY';
+        position: absolute;
+        top: 20px;
+        right: -30px;
+        background: #ffd700;
+        color: #333;
+        padding: 5px 40px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        transform: rotate(45deg);
+    }
+
+    .price {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #667eea;
+    }
+
+    .price-period {
+        font-size: 1rem;
+        color: #6c757d;
+    }
+
+    .feature-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .feature-list li {
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f3f4;
+        display: flex;
+        align-items: center;
+    }
+
+    .feature-list li:last-child {
+        border-bottom: none;
+    }
+
+    .feature-icon {
+        color: #28a745;
+        margin-right: 10px;
+        font-size: 1.1rem;
+    }
+
+    .premium-features {
+        background: #f8f9fa;
+        padding: 60px 0;
+    }
+
+    .feature-showcase {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        margin: 20px 0;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .btn-premium {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-premium:hover {
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .testimonial {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin: 15px 0;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+</style>
+<script src="https://js.stripe.com/v3/"></script>
+{% endblock %}
+
+{% block content %}
+<div class="premium-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4 fw-bold mb-4">
+                    <i class="fas fa-crown me-3"></i>
+                    CV Optimizer Pro Premium
+                </h1>
+                <p class="lead">Odblokuj zaawansowane funkcje i zwiększ swoje szanse na otrzymanie wymarzonej pracy</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <!-- Pricing Plans -->
+    <div class="row justify-content-center">
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="pricing-card text-center">
+                <h3 class="mb-3">Basic</h3>
+                <div class="price">0 zł</div>
+                <div class="price-period">na zawsze</div>
+                <ul class="feature-list mt-4">
+                    <li><i class="fas fa-check feature-icon"></i>Podstawowa analiza CV</li>
+                    <li><i class="fas fa-check feature-icon"></i>Optymalizacja tekstowa</li>
+                    <li><i class="fas fa-check feature-icon"></i>List motywacyjny</li>
+                    <li><i class="fas fa-check feature-icon"></i>5 analiz miesięcznie</li>
+                </ul>
+                <button class="btn btn-outline-primary mt-4 w-100" disabled>Obecny plan</button>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="pricing-card featured text-center">
+                <h3 class="mb-3">Premium</h3>
+                <div class="price">29 zł</div>
+                <div class="price-period">miesięcznie</div>
+                <ul class="feature-list mt-4">
+                    <li><i class="fas fa-check feature-icon"></i>Wszystko z Basic</li>
+                    <li><i class="fas fa-check feature-icon"></i>Performance Dashboard</li>
+                    <li><i class="fas fa-check feature-icon"></i>Zaawansowane wykresy</li>
+                    <li><i class="fas fa-check feature-icon"></i>Analiza ATS</li>
+                    <li><i class="fas fa-check feature-icon"></i>Tracking aplikacji</li>
+                    <li><i class="fas fa-check feature-icon"></i>Nieograniczone analizy</li>
+                    <li><i class="fas fa-check feature-icon"></i>Priorytetowe wsparcie</li>
+                </ul>
+                <button id="premium-subscribe-btn" class="btn btn-premium mt-4 w-100">
+                    Rozpocznij Premium
+                </button>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="pricing-card text-center">
+                <h3 class="mb-3">Professional</h3>
+                <div class="price">99 zł</div>
+                <div class="price-period">miesięcznie</div>
+                <ul class="feature-list mt-4">
+                    <li><i class="fas fa-check feature-icon"></i>Wszystko z Premium</li>
+                    <li><i class="fas fa-check feature-icon"></i>LinkedIn optimizer</li>
+                    <li><i class="fas fa-check feature-icon"></i>Industry templates</li>
+                    <li><i class="fas fa-check feature-icon"></i>Personal branding</li>
+                    <li><i class="fas fa-check feature-icon"></i>Career advisor AI</li>
+                    <li><i class="fas fa-check feature-icon"></i>Team management</li>
+                </ul>
+                <button class="btn btn-outline-secondary mt-4 w-100">Wkrótce</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Premium Features Showcase -->
+<div class="premium-features">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center mb-5">
+                <h2 class="display-6 fw-bold mb-4">Co zyskujesz z Premium?</h2>
+                <p class="lead text-muted">Zaawansowane narzędzia które pomogą Ci wyróżnić się na rynku pracy</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="feature-showcase">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-primary text-white rounded-circle p-3 me-3">
+                            <i class="fas fa-chart-line fa-lg"></i>
+                        </div>
+                        <h4>Performance Dashboard</h4>
+                    </div>
+                    <p class="text-muted">Szczegółowe analizy wydajności Twojego CV z wykresami, trendami i porównaniami do średnich branżowych.</p>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Wykresy trendów w czasie</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Analiza słów kluczowych</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Porównanie z konkurencją</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="feature-showcase">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-success text-white rounded-circle p-3 me-3">
+                            <i class="fas fa-robot fa-lg"></i>
+                        </div>
+                        <h4>Zaawansowana analiza ATS</h4>
+                    </div>
+                    <p class="text-muted">Sprawdź jak Twoje CV wypadnie w najpopularniejszych systemach rekrutacyjnych.</p>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Test z 15+ systemami ATS</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Rekomendacje poprawek</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Score prediction</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="feature-showcase">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-warning text-white rounded-circle p-3 me-3">
+                            <i class="fas fa-tracking fa-lg"></i>
+                        </div>
+                        <h4>Application Tracking</h4>
+                    </div>
+                    <p class="text-muted">Śledź swoje aplikacje, analizuj response rate i otrzymuj insights o swojej aktywności.</p>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Kalendarz aplikacji</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Statystyki odpowiedzi</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Followup reminders</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="feature-showcase">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-info text-white rounded-circle p-3 me-3">
+                            <i class="fas fa-infinity fa-lg"></i>
+                        </div>
+                        <h4>Unlimited Everything</h4>
+                    </div>
+                    <p class="text-muted">Bez limitów na analizy, optymalizacje i wszystkie funkcje AI.</p>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Nieograniczone analizy CV</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Unlimited AI queries</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Priority processing</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Testimonials -->
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h3 class="text-center mb-4">Co mówią nasi użytkownicy Premium</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="testimonial">
+                        <div class="mb-3">
+                            <i class="fas fa-quote-left text-primary"></i>
+                        </div>
+                        <p>"Dashboard Premium pomógł mi zrozumieć dlaczego nie dostawałem odpowiedzi. Po optymalizacji dostałem 3 zaproszenia na rozmowy w tydzień!"</p>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary text-white rounded-circle p-2 me-3">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div>
+                                <strong>Marcin K.</strong><br>
+                                <small class="text-muted">Frontend Developer</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="testimonial">
+                        <div class="mb-3">
+                            <i class="fas fa-quote-left text-primary"></i>
+                        </div>
+                        <p>"Analiza ATS była przełomowa. Odkryłam, że moje CV było całkowicie nieczytelne dla systemów rekrutacyjnych. Teraz mam dream job!"</p>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success text-white rounded-circle p-2 me-3">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div>
+                                <strong>Anna P.</strong><br>
+                                <small class="text-muted">Product Manager</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const stripe = Stripe('{{ stripe_public_key }}');
+
+document.getElementById('premium-subscribe-btn').addEventListener('click', async () => {
+    const button = document.getElementById('premium-subscribe-btn');
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Przetwarzanie...';
+    button.disabled = true;
+
+    try {
+        // Create subscription
+        const response = await fetch('/api/create-premium-subscription', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const { clientSecret } = await response.json();
+
+        // Redirect to Stripe checkout
+        const { error } = await stripe.redirectToCheckout({
+            sessionId: clientSecret
+        });
+
+        if (error) {
+            console.error('Error:', error);
+            button.innerHTML = 'Rozpocznij Premium';
+            button.disabled = false;
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        button.innerHTML = 'Rozpocznij Premium';
+        button.disabled = false;
+    }
+});
+</script>
+{% endblock %}

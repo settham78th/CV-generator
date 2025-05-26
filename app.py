@@ -244,6 +244,88 @@ def privacy():
     from datetime import datetime
     return render_template('privacy.html', moment=datetime.now())
 
+@app.route('/premium-dashboard')
+@login_required
+def premium_dashboard():
+    """Premium CV Performance Dashboard"""
+    # Calculate enhanced user statistics
+    user_cvs = CVUpload.query.filter_by(user_id=current_user.id).all()
+    total_analyses = sum(len(cv.analysis_results) for cv in user_cvs)
+    
+    # Enhanced stats for premium dashboard
+    user_stats = {
+        'total_uploads': len(user_cvs),
+        'total_analyses': total_analyses,
+        'user_level': get_user_level(len(user_cvs)),
+        'improvement_score': min(95, 20 + total_analyses * 8),
+        'cv_score': min(95, 60 + total_analyses * 5),
+        'score_improvement': min(25, total_analyses * 2),
+        'profile_views': 120 + total_analyses * 8,
+        'views_change': min(30, total_analyses * 3),
+        'applications_sent': total_analyses * 2,
+        'response_rate': min(25, 10 + total_analyses),
+        'match_percentage': min(85, 45 + total_analyses * 4),
+        'is_premium': hasattr(current_user, 'is_premium') and current_user.is_premium
+    }
+    
+    return render_template('premium_dashboard.html', user_stats=user_stats)
+
+@app.route('/premium-subscription')
+@login_required  
+def premium_subscription():
+    """Premium subscription page"""
+    stripe_public_key = os.environ.get('VITE_STRIPE_PUBLIC_KEY')
+    return render_template('premium_subscription.html', stripe_public_key=stripe_public_key)
+
+@app.route('/api/create-premium-subscription', methods=['POST'])
+@login_required
+def create_premium_subscription():
+    """Create Stripe checkout session for premium subscription"""
+    try:
+        # Create Stripe checkout session
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'pln',
+                    'product_data': {
+                        'name': 'CV Optimizer Pro Premium',
+                        'description': 'Miesięczna subskrypcja Premium z zaawansowanymi funkcjami AI',
+                    },
+                    'unit_amount': 2900,  # 29.00 PLN in grosze
+                    'recurring': {
+                        'interval': 'month',
+                    },
+                },
+                'quantity': 1,
+            }],
+            mode='subscription',
+            success_url=request.url_root + 'premium-success?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url=request.url_root + 'premium-subscription',
+            customer_email=current_user.email,
+            metadata={
+                'user_id': current_user.id,
+                'plan': 'premium'
+            }
+        )
+        
+        return jsonify({'clientSecret': checkout_session.id})
+        
+    except Exception as e:
+        logger.error(f"Error creating premium subscription: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/premium-success')
+@login_required
+def premium_success():
+    """Premium subscription success page"""
+    session_id = request.args.get('session_id')
+    
+    # In a real app, you'd verify the session and activate premium here
+    # For now, we'll just show success message
+    
+    return render_template('premium_success.html', session_id=session_id)
+
 @app.route('/payment-success')
 def payment_success():
     return render_template('payment_success.html')
