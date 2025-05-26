@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const uploadErrorAlert = document.getElementById('upload-error');
     const errorMessageSpan = document.getElementById('error-message');
     const processingIndicator = document.getElementById('processing-indicator');
+    const resultsSection = document.getElementById('results-section');
 
     // CV preview and editor elements
     const cvPreview = document.getElementById('cv-preview');
@@ -74,6 +75,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     // Show success message
                     if (uploadSuccessAlert) uploadSuccessAlert.style.display = 'block';
+                    
+                    // Show results section and scroll to it
+                    if (resultsSection) {
+                        resultsSection.style.display = 'block';
+                        setTimeout(() => {
+                            resultsSection.scrollIntoView({ behavior: 'smooth' });
+                        }, 500);
+                    }
                 } else {
                     showError(data.message || 'Error uploading CV');
                 }

@@ -96,7 +96,7 @@ def index():
             'improvement_score': min(95, 20 + total_analyses * 8)
         }
     
-    return render_template('modern-index.html', user_stats=user_stats)
+    return render_template('enhanced-index.html', user_stats=user_stats)
 
 def get_user_level(cv_count):
     """Determine user level based on CV uploads"""
