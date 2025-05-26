@@ -146,15 +146,9 @@
     {% if not current_user.is_authenticated %}
     <div class="upgrade-banner">
         <h4><i class="fas fa-lock me-2"></i>Zaloguj się, aby uzyskać dostęp</h4>
-        <p class="mb-3">CV Performance Dashboard jest dostępny dla zarejestrowanych użytkowników</p>
+        <p class="mb-3">CV Performance Dashboard jest dostępny dla użytkowników Premium</p>
         <a href="{{ url_for('login') }}" class="btn btn-light btn-lg me-2">Zaloguj się</a>
         <a href="{{ url_for('register') }}" class="btn btn-outline-light btn-lg">Zarejestruj się</a>
-    </div>
-    {% elif not user_stats.get('is_premium', False) %}
-    <div class="upgrade-banner">
-        <h4><i class="fas fa-star me-2"></i>Przejdź na Premium</h4>
-        <p class="mb-3">Odblokuj zaawansowane analizy i szczegółowe statystyki swojego CV</p>
-        <a href="{{ url_for('premium_subscription') }}" class="btn btn-light btn-lg">Rozpocznij za 29 zł/miesiąc</a>
     </div>
     {% endif %}
 
