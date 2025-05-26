@@ -31,9 +31,13 @@
     {% block extra_styles %}{% endblock %}
     
     <!-- Meta tags for SEO -->
-    <meta name="description" content="Profesjonalne narzędzie AI do optymalizacji CV. Zwiększ swoje szanse na wymarzoną pracę dzięki analizie i ulepszeniom opartym na sztucznej inteligencji.">
-    <meta name="keywords" content="CV, optymalizacja CV, AI, sztuczna inteligencja, kariera, praca, rekrutacja">
+    <meta name="description" content="CV Optimizer Pro - profesjonalne narzędzie AI do optymalizacji CV i życiorysów. Zwiększ szanse na pracę o 70% dzięki analizie sztucznej inteligencji, generowaniu listów motywacyjnych i sprawdzaniu kompatybilności ATS.">
+    <meta name="keywords" content="CV, optymalizacja CV, AI, sztuczna inteligencja, kariera, praca, rekrutacja, życiorys, list motywacyjny, ATS, generator CV, analiza CV, poprawa CV">
     <meta name="author" content="CV Optimizer Pro">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="Polish">
+    <meta name="revisit-after" content="7 days">
+    <link rel="canonical" href="https://cv-optimizer-pro.replit.app/">
     
     <!-- Open Graph tags -->
     <meta property="og:title" content="CV Optimizer Pro - Optymalizacja CV z AI">
@@ -180,6 +184,11 @@
                             <a href="#" class="social-link" title="GitHub">
                                 <i class="fab fa-github"></i>
                             </a>
+                        </div>
+                        <div class="footer-menu mb-2">
+                            <a href="{{ url_for('about') }}" class="footer-link me-3">O nas</a>
+                            <a href="{{ url_for('privacy') }}" class="footer-link me-3">Polityka Prywatności</a>
+                            <a href="mailto:kontakt@cvoptimizer.pro" class="footer-link">Kontakt</a>
                         </div>
                         <p class="copyright">
                             &copy; 2024 CV Optimizer Pro. Wszystkie prawa zastrzeżone.

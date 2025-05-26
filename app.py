@@ -233,6 +233,16 @@ def cv_generator():
     """CV Generator page"""
     return render_template('cv_generator.html')
 
+@app.route('/about')
+def about():
+    """About page"""
+    return render_template('about.html')
+
+@app.route('/privacy')
+def privacy():
+    """Privacy policy page"""
+    return render_template('privacy.html')
+
 @app.route('/payment-success')
 def payment_success():
     return render_template('payment_success.html')
