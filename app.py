@@ -227,6 +227,13 @@ def checkout():
     stripe_public_key = os.environ.get('VITE_STRIPE_PUBLIC_KEY')
     return render_template('checkout.html', stripe_public_key=stripe_public_key)
 
+@app.route('/payment-options')
+@login_required
+def payment_options():
+    """Payment options page - choose between one-time CV or Premium subscription"""
+    stripe_public_key = os.environ.get('VITE_STRIPE_PUBLIC_KEY')
+    return render_template('payment_options.html', stripe_public_key=stripe_public_key)
+
 @app.route('/cv-generator')
 @login_required
 def cv_generator():

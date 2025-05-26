@@ -1,0 +1,392 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+    .payment-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 60px 0;
+        margin-top: -80px;
+        padding-top: 140px;
+    }
+
+    .option-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px 30px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+    }
+
+    .option-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+    }
+
+    .option-card.popular {
+        border: 3px solid #ffd700;
+        transform: scale(1.05);
+    }
+
+    .option-card.popular::before {
+        content: 'NAJCHĘTNIEJ WYBIERANE';
+        position: absolute;
+        top: 20px;
+        right: -40px;
+        background: #ffd700;
+        color: #333;
+        padding: 5px 50px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        transform: rotate(45deg);
+    }
+
+    .price {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #667eea;
+        margin-bottom: 10px;
+    }
+
+    .price-period {
+        font-size: 1rem;
+        color: #6c757d;
+        margin-bottom: 20px;
+    }
+
+    .feature-list {
+        list-style: none;
+        padding: 0;
+        margin: 30px 0;
+    }
+
+    .feature-list li {
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f3f4;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .feature-list li:last-child {
+        border-bottom: none;
+    }
+
+    .feature-icon {
+        color: #28a745;
+        margin-right: 12px;
+        font-size: 1.1rem;
+        margin-top: 2px;
+        min-width: 20px;
+    }
+
+    .btn-payment {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .btn-payment:hover {
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-payment.btn-outline {
+        background: transparent;
+        color: #667eea;
+        border: 2px solid #667eea;
+    }
+
+    .btn-payment.btn-outline:hover {
+        background: #667eea;
+        color: white;
+    }
+
+    .comparison-table {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        margin: 40px 0;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .comparison-row {
+        display: flex;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #f1f3f4;
+    }
+
+    .comparison-row:last-child {
+        border-bottom: none;
+    }
+
+    .feature-name {
+        flex: 1;
+        font-weight: 500;
+    }
+
+    .check-yes {
+        color: #28a745;
+        font-size: 1.2rem;
+    }
+
+    .check-no {
+        color: #dc3545;
+        font-size: 1.2rem;
+    }
+
+    .testimonial-section {
+        background: #f8f9fa;
+        padding: 60px 0;
+    }
+
+    .testimonial-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin: 15px 0;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+</style>
+<script src="https://js.stripe.com/v3/"></script>
+{% endblock %}
+
+{% block content %}
+<div class="payment-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto text-center">
+                <h1 class="display-4 fw-bold mb-4">
+                    Wybierz plan dla siebie
+                </h1>
+                <p class="lead">Mamy dwie opcje dopasowane do Twoich potrzeb - jednorazowe CV lub kompletna platforma Premium</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <!-- Payment Options -->
+    <div class="row justify-content-center">
+        <!-- One-time CV Option -->
+        <div class="col-lg-5 col-md-6 mb-4">
+            <div class="option-card text-center">
+                <div class="mb-3">
+                    <i class="fas fa-file-pdf fa-3x text-primary mb-3"></i>
+                </div>
+                <h3 class="mb-3">Jedno CV</h3>
+                <div class="price">9,99 zł</div>
+                <div class="price-period">jednorazowo</div>
+                <p class="text-muted">Idealne gdy potrzebujesz szybko profesjonalnego CV</p>
+                
+                <ul class="feature-list">
+                    <li><i class="fas fa-check feature-icon"></i>Wypełnij formularz CV</li>
+                    <li><i class="fas fa-check feature-icon"></i>Podgląd na żywo</li>
+                    <li><i class="fas fa-check feature-icon"></i>Profesjonalny design</li>
+                    <li><i class="fas fa-check feature-icon"></i>Pobieranie PDF</li>
+                    <li><i class="fas fa-check feature-icon"></i>Gotowe w 5 minut</li>
+                    <li><i class="fas fa-check feature-icon"></i>Bez zobowiązań</li>
+                </ul>
+                
+                <button onclick="selectOption('cv')" class="btn btn-payment btn-outline mt-3">
+                    <i class="fas fa-download me-2"></i>Stwórz CV
+                </button>
+                <p class="small text-muted mt-2">Płatność jednorazowa • Natychmiastowy dostęp</p>
+            </div>
+        </div>
+
+        <!-- Premium Subscription Option -->
+        <div class="col-lg-5 col-md-6 mb-4">
+            <div class="option-card popular text-center">
+                <div class="mb-3">
+                    <i class="fas fa-crown fa-3x text-warning mb-3"></i>
+                </div>
+                <h3 class="mb-3">Premium Platform</h3>
+                <div class="price">29 zł</div>
+                <div class="price-period">miesięcznie</div>
+                <p class="text-muted">Kompletna platforma do zarządzania karierą</p>
+                
+                <ul class="feature-list">
+                    <li><i class="fas fa-check feature-icon"></i>Wszystko z opcji "Jedno CV"</li>
+                    <li><i class="fas fa-check feature-icon"></i>Nieograniczone CV</li>
+                    <li><i class="fas fa-check feature-icon"></i>Performance Dashboard</li>
+                    <li><i class="fas fa-check feature-icon"></i>Zaawansowane wykresy AI</li>
+                    <li><i class="fas fa-check feature-icon"></i>Analiza kompatybilności ATS</li>
+                    <li><i class="fas fa-check feature-icon"></i>Tracking aplikacji</li>
+                    <li><i class="fas fa-check feature-icon"></i>Optymalizacja AI</li>
+                    <li><i class="fas fa-check feature-icon"></i>Analiza słów kluczowych</li>
+                    <li><i class="fas fa-check feature-icon"></i>Priorytetowe wsparcie</li>
+                </ul>
+                
+                <button onclick="selectOption('premium')" class="btn btn-payment mt-3">
+                    <i class="fas fa-star me-2"></i>Rozpocznij Premium
+                </button>
+                <p class="small text-muted mt-2">Anuluj w dowolnym momencie • 7 dni gwarancji</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detailed Comparison -->
+<div class="container my-5">
+    <div class="comparison-table">
+        <h3 class="text-center mb-4">Porównanie funkcji</h3>
+        <div class="row">
+            <div class="col-md-4">
+                <h6 class="text-muted">Funkcja</h6>
+            </div>
+            <div class="col-md-4 text-center">
+                <h6>Jedno CV<br><span class="text-muted small">9,99 zł</span></h6>
+            </div>
+            <div class="col-md-4 text-center">
+                <h6>Premium<br><span class="text-muted small">29 zł/miesiąc</span></h6>
+            </div>
+        </div>
+        <hr>
+        
+        <div class="comparison-row">
+            <div class="feature-name">Generator CV z podglądem</div>
+            <div class="col-md-4 text-center"><i class="fas fa-check check-yes"></i></div>
+            <div class="col-md-4 text-center"><i class="fas fa-check check-yes"></i></div>
+        </div>
+        
+        <div class="comparison-row">
+            <div class="feature-name">Pobieranie PDF</div>
+            <div class="col-md-4 text-center"><i class="fas fa-check check-yes"></i></div>
+            <div class="col-md-4 text-center"><i class="fas fa-check check-yes"></i></div>
+        </div>
+        
+        <div class="comparison-row">
+            <div class="feature-name">Liczba CV</div>
+            <div class="col-md-4 text-center">1</div>
+            <div class="col-md-4 text-center">Nieograniczone</div>
+        </div>
+        
+        <div class="comparison-row">
+            <div class="feature-name">Performance Dashboard</div>
+            <div class="col-md-4 text-center"><i class="fas fa-times check-no"></i></div>
+            <div class="col-md-4 text-center"><i class="fas fa-check check-yes"></i></div>
+        </div>
+        
+        <div class="comparison-row">
+            <div class="feature-name">Analiza AI i optymalizacja</div>
+            <div class="col-md-4 text-center"><i class="fas fa-times check-no"></i></div>
+            <div class="col-md-4 text-center"><i class="fas fa-check check-yes"></i></div>
+        </div>
+        
+        <div class="comparison-row">
+            <div class="feature-name">Tracking aplikacji</div>
+            <div class="col-md-4 text-center"><i class="fas fa-times check-no"></i></div>
+            <div class="col-md-4 text-center"><i class="fas fa-check check-yes"></i></div>
+        </div>
+        
+        <div class="comparison-row">
+            <div class="feature-name">Analiza kompatybilności ATS</div>
+            <div class="col-md-4 text-center"><i class="fas fa-times check-no"></i></div>
+            <div class="col-md-4 text-center"><i class="fas fa-check check-yes"></i></div>
+        </div>
+    </div>
+</div>
+
+<!-- Testimonials -->
+<div class="testimonial-section">
+    <div class="container">
+        <h3 class="text-center mb-5">Co mówią nasi użytkownicy</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="testimonial-card">
+                    <div class="mb-3">
+                        <i class="fas fa-quote-left text-primary"></i>
+                    </div>
+                    <p>"Zacząłem od jednego CV za 9,99 zł. Gdy dostałem pracę, wykupiłem Premium żeby śledzić moje aplikacje. Teraz mam dream job!"</p>
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary text-white rounded-circle p-2 me-3">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <strong>Tomasz K.</strong><br>
+                            <small class="text-muted">Software Developer</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="testimonial-card">
+                    <div class="mb-3">
+                        <i class="fas fa-quote-left text-primary"></i>
+                    </div>
+                    <p>"Premium Dashboard pokazał mi dlaczego nie dostawałam odpowiedzi. Analytics pomógł mi poprawić CV i zwiększyć response rate o 300%!"</p>
+                    <div class="d-flex align-items-center">
+                        <div class="bg-success text-white rounded-circle p-2 me-3">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <strong>Anna M.</strong><br>
+                            <small class="text-muted">Marketing Manager</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const stripe = Stripe('{{ stripe_public_key }}');
+
+function selectOption(type) {
+    if (type === 'cv') {
+        // Redirect to CV Generator
+        window.location.href = '/cv-generator';
+    } else if (type === 'premium') {
+        // Create premium subscription
+        createPremiumSubscription();
+    }
+}
+
+async function createPremiumSubscription() {
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Przetwarzanie...';
+    button.disabled = true;
+
+    try {
+        const response = await fetch('/api/create-premium-subscription', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const { clientSecret } = await response.json();
+
+        // Redirect to Stripe checkout
+        const { error } = await stripe.redirectToCheckout({
+            sessionId: clientSecret
+        });
+
+        if (error) {
+            console.error('Error:', error);
+            button.innerHTML = originalText;
+            button.disabled = false;
+            alert('Wystąpił błąd podczas przetwarzania płatności. Spróbuj ponownie.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        button.innerHTML = originalText;
+        button.disabled = false;
+        alert('Wystąpił błąd podczas przetwarzania płatności. Spróbuj ponownie.');
+    }
+}
+</script>
+{% endblock %}

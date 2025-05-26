@@ -259,11 +259,11 @@
                         
                         <div class="cta-buttons">
                             {% if current_user.is_authenticated %}
-                                <a href="#upload-section" class="cta-primary">
-                                    <i class="fas fa-rocket me-2"></i>Rozpocznij analizę
+                                <a href="{{ url_for('payment_options') }}" class="cta-primary">
+                                    <i class="fas fa-rocket me-2"></i>Wybierz plan
                                 </a>
-                                <a href="{{ url_for('cv_generator') }}" class="cta-secondary">
-                                    <i class="fas fa-magic me-2"></i>Stwórz nowe CV
+                                <a href="#upload-section" class="cta-secondary">
+                                    <i class="fas fa-chart-bar me-2"></i>Przeanalizuj CV
                                 </a>
                             {% else %}
                                 <a href="{{ url_for('register') }}" class="cta-primary">
