@@ -745,5 +745,53 @@ if __name__ == '__main__':
             print("🔑 Password: DevAdmin2024!")
         else:
             print("✅ Developer account already exists")
+
+# PWA-specific routes
+@app.route('/manifest.json')
+def manifest():
+    return app.send_static_file('../manifest.json')
+
+@app.route('/service-worker.js')
+def service_worker():
+    return app.send_static_file('js/sw.js')
+
+@app.route('/offline')
+def offline():
+    return render_template('offline.html')
+
+@app.route('/browserconfig.xml')
+def browserconfig():
+    xml_content = '''<?xml version="1.0" encoding="utf-8"?>
+<browserconfig>
+    <msapplication>
+        <tile>
+            <square150x150logo src="/static/icons/icon-152x152.png"/>
+            <TileColor>#667eea</TileColor>
+        </tile>
+    </msapplication>
+</browserconfig>'''
+    return xml_content, 200, {'Content-Type': 'application/xml'}
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+        
+        # Create developer account for testing
+        dev_user = User.query.filter_by(username='developer').first()
+        if not dev_user:
+            dev_user = User(
+                username='developer',
+                email='dev@cvoptimizer.pro',
+                first_name='PWA',
+                last_name='Developer'
+            )
+            dev_user.set_password('DevAdmin2024!')
+            db.session.add(dev_user)
+            db.session.commit()
+            print("✅ PWA Builder Developer account created!")
+            print("🔑 Username: developer")
+            print("🔑 Password: DevAdmin2024!")
+        else:
+            print("✅ PWA Builder Developer account ready")
             
     app.run(host='0.0.0.0', port=5003, debug=True)
