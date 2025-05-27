@@ -342,7 +342,10 @@
 </div>
 
 <script>
+// Initialize Stripe only if we have the public key
+{% if stripe_public_key %}
 const stripe = Stripe('{{ stripe_public_key }}');
+{% endif %}
 
 function selectOption(type) {
     if (type === 'cv') {
