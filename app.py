@@ -289,6 +289,42 @@ def premium_subscription():
 def create_premium_subscription():
     """Create Stripe checkout session for premium subscription"""
     try:
+        stripe_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'pln',
+                    'product_data': {
+                        'name': 'CV Optimizer Pro Premium',
+                        'description': 'Miesięczna subskrypcja Premium z pełnym dostępem do dashboardu i analiz AI',
+                    },
+                    'unit_amount': 2900,  # 29.00 PLN w groszach
+                    'recurring': {
+                        'interval': 'month',
+                    },
+                },
+                'quantity': 1,
+            }],
+            mode='subscription',
+            success_url=url_for('premium_success', _external=True),
+            cancel_url=url_for('payment_options', _external=True),
+            customer_email=current_user.email,
+            metadata={
+                'user_id': current_user.id,
+                'subscription_type': 'premium'
+            }
+        )
+        
+        return jsonify({'clientSecret': stripe_session.id})
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/create-premium-subscription', methods=['POST'])
+@login_required
+def create_premium_subscription():
+    """Create Stripe checkout session for premium subscription"""
+    try:
         # Create Stripe checkout session
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=['card'],

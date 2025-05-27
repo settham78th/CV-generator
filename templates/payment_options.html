@@ -443,24 +443,22 @@ async function createPremiumSubscription() {
             },
         });
 
-        const { clientSecret } = await response.json();
-
-        // Redirect to Stripe checkout
-        const { error } = await stripe.redirectToCheckout({
-            sessionId: clientSecret
-        });
-
-        if (error) {
-            console.error('Error:', error);
-            button.innerHTML = originalText;
-            button.disabled = false;
-            alert('Wystąpił błąd podczas przetwarzania płatności. Spróbuj ponownie.');
+        const data = await response.json();
+        
+        if (data.url) {
+            // Redirect to Stripe checkout page
+            window.location.href = data.url;
+        } else if (data.error) {
+            throw new Error(data.error);
+        } else {
+            throw new Error('Nieoczekiwana odpowiedź serwera');
         }
+
     } catch (error) {
         console.error('Error:', error);
         button.innerHTML = originalText;
         button.disabled = false;
-        alert('Wystąpił błąd podczas przetwarzania płatności. Spróbuj ponownie.');
+        alert('Wystąpił błąd podczas przetwarzania płatności: ' + error.message);
     }
 }
 </script>
