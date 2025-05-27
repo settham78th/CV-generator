@@ -320,43 +320,7 @@ def create_premium_subscription():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/create-premium-subscription', methods=['POST'])
-@login_required
-def create_premium_subscription():
-    """Create Stripe checkout session for premium subscription"""
-    try:
-        # Create Stripe checkout session
-        checkout_session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            line_items=[{
-                'price_data': {
-                    'currency': 'pln',
-                    'product_data': {
-                        'name': 'CV Optimizer Pro Premium',
-                        'description': 'Miesięczna subskrypcja Premium z zaawansowanymi funkcjami AI',
-                    },
-                    'unit_amount': 2900,  # 29.00 PLN in grosze
-                    'recurring': {
-                        'interval': 'month',
-                    },
-                },
-                'quantity': 1,
-            }],
-            mode='subscription',
-            success_url=request.url_root + 'premium-success?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url=request.url_root + 'premium-subscription',
-            customer_email=current_user.email,
-            metadata={
-                'user_id': current_user.id,
-                'plan': 'premium'
-            }
-        )
-        
-        return jsonify({'clientSecret': checkout_session.id})
-        
-    except Exception as e:
-        logger.error(f"Error creating premium subscription: {str(e)}")
-        return jsonify({'error': str(e)}), 500
+
 
 @app.route('/premium-success')
 @login_required
